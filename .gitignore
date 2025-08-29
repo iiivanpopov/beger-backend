@@ -1,27 +1,28 @@
-# dependencies (bun install)
+# Dependencies
 node_modules
 
-# output
+# Build outputs
 out
 dist
 generated
 *.tgz
 
+# Certificates, credentials
 certs
 creds
-drizzle
-.sonda
 
-# code coverage
+drizzle/.cache
+
+# Code coverage
 coverage
 *.lcov
 
-# logs
+# Logs
 logs
-_.log
+*.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
-# dotenv environment variable files
+# Environment variable files
 .env
 .env.docker
 .env.development.local
@@ -29,13 +30,21 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env.production.local
 .env.local
 
-# caches
+# Caches
 .eslintcache
 .cache
 *.tsbuildinfo
 
-# IntelliJ based IDEs
+# IDEs
+.vscode
 .idea
 
-# Finder (MacOS) folder config
+# OS
 .DS_Store
+
+# Miscellaneous
+README.md
+LICENSE
+Makefile
+helm-charts
+.editorconfig

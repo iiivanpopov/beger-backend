@@ -1,5 +1,6 @@
 import { hash, log } from '@/utils'
-import { db, users } from './index'
+import { db } from './instance'
+import { users } from './tables'
 
 async function main() {
   const passwordHash = await hash(process.env.ADMIN_PASSWORD ?? 'admin123')

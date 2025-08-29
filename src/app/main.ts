@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
@@ -15,12 +16,11 @@ export const setup = async () => {
   app.use(logger())
 
   app.route('/api', router)
-
   Bun.serve({
     port: CONFIG.server.port,
     tls: {
-      key: Bun.file('./certs/key.pem'),
-      cert: Bun.file('./certs/cert.pem')
+      key: Bun.file(path.resolve(import.meta.dirname, './certs/key.pem')),
+      cert: Bun.file(path.resolve(import.meta.dirname, './certs/cert.pem'))
     },
     fetch: app.fetch,
     development: CONFIG.nodeEnv !== 'production'

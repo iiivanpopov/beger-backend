@@ -1,43 +1,39 @@
 services:
-  app:
+  backend:
+    container_name: backend
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
-      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
-      - PORT=${PORT}
-      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/beger
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - beger-network
     restart: unless-stopped
-    volumes:
-      - ./certs:/app/certs:ro
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${PORT}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
   postgres:
     image: postgres:alpine
-    container_name: pg-alpine-prod
+    container_name: postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -51,11 +47,11 @@ services:
     networks:
       - beger-network
     restart: unless-stopped
+
 volumes:
   pgdata:
     driver: local
-  redis_data:
-    driver: local
+
 networks:
   beger-network:
     driver: bridge
