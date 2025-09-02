@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
-import * as v from 'valibot'
+import { parse } from 'valibot'
 import { CONFIG } from '@/config'
 import { ApiError } from '@/exceptions'
 import { decode, verify } from '@/utils'
@@ -36,7 +36,7 @@ export class AuthController {
 
   login = async (c: Context): Promise<Response> => {
     const body = await c.req.json()
-    const parsed = v.parse(LoginSchema, body)
+    const parsed = parse(LoginSchema, body)
 
     const userExists =
       await this.authService.userRepository.isUserExistsByUserName(
@@ -57,15 +57,15 @@ export class AuthController {
 
   register = async (c: Context): Promise<Response> => {
     const body = await c.req.json()
-    const userPayload = v.parse(RegisterSchema, body)
+    const userPayload = parse(RegisterSchema, body)
 
     const accessToken = getCookie(c, CONFIG.cookies.accessTokenName)
     if (!accessToken) {
       throw ApiError.Unauthorized('Missing accessToken token')
     }
 
-    const { role } = decode(accessToken)
-    if (role !== 'admin') {
+    const [_, decoded] = await verify(accessToken)
+    if (decoded?.payload.role !== 'admin') {
       throw ApiError.Forbidden('You must be an admin')
     }
 

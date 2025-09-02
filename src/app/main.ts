@@ -16,11 +16,13 @@ export const setup = async () => {
   app.use(logger())
 
   app.route('/api', router)
+
+  const baseUrl = CONFIG.nodeEnv === 'development' ? '/' : import.meta.dirname
   Bun.serve({
     port: CONFIG.server.port,
     tls: {
-      key: Bun.file(path.resolve(import.meta.dirname, './certs/key.pem')),
-      cert: Bun.file(path.resolve(import.meta.dirname, './certs/cert.pem'))
+      key: Bun.file(path.resolve(baseUrl, './certs/key.pem')),
+      cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem'))
     },
     fetch: app.fetch,
     development: CONFIG.nodeEnv !== 'production'

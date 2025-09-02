@@ -1,8 +1,6 @@
 import { eq } from 'drizzle-orm'
 import type { Database } from '@/db/instance'
-import { type Token, tokens } from '@/db/tables'
-
-export type TokenPayload = Omit<Token, 'id'>
+import { type InsertToken, tokens } from '@/db/tables'
 
 export class TokenRepository {
   constructor(private db: Database) {}
@@ -11,7 +9,7 @@ export class TokenRepository {
     return this.db.select().from(tokens).where(eq(tokens.id, id))
   }
 
-  createToken(data: TokenPayload) {
+  createToken(data: InsertToken) {
     return this.db.insert(tokens).values(data).returning()
   }
 
@@ -27,11 +25,11 @@ export class TokenRepository {
     return this.db.delete(tokens).where(eq(tokens.token, token)).returning()
   }
 
-  updateTokenById(id: number, data: Partial<TokenPayload>) {
+  updateTokenById(id: number, data: Partial<InsertToken>) {
     return this.db.update(tokens).set(data).where(eq(tokens.id, id)).returning()
   }
 
-  updateTokenByUserId(userId: number, data: Partial<TokenPayload>) {
+  updateTokenByUserId(userId: number, data: Partial<InsertToken>) {
     return this.db
       .update(tokens)
       .set(data)
@@ -39,7 +37,7 @@ export class TokenRepository {
       .returning()
   }
 
-  upsertToken(data: TokenPayload) {
+  upsertToken(data: InsertToken) {
     return this.db
       .insert(tokens)
       .values(data)

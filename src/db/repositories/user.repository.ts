@@ -1,46 +1,80 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import type { Database } from '@/db/instance'
-import { tokens, type User, users } from '@/db/tables'
-
-export type UserPayload = Omit<User, 'id'>
+import { type InsertUser, tokens, users } from '@/db/tables'
 
 export class UserRepository {
   constructor(private db: Database) {}
 
   async isUserExistsByUserName(userName: string): Promise<boolean> {
-    const [user] = await this.findUserByUserName(userName)
-    return !!user
+    const [result] = await this.db
+      .select({
+        exists: sql<boolean>`EXISTS(SELECT 1 FROM users WHERE user_name = ${userName})`
+      })
+      .from(users)
+      .limit(1)
+
+    return !!result?.exists
   }
 
   async isUserExistsById(id: number): Promise<boolean> {
-    const [user] = await this.findUserById(id)
-    return !!user
+    const [result] = await this.db
+      .select({
+        exists: sql<boolean>`EXISTS(SELECT 1 FROM users WHERE id = ${id})`
+      })
+      .from(users)
+      .limit(1)
+
+    return !!result?.exists
   }
 
-  findUserById(id: number) {
-    return this.db.select().from(users).where(eq(users.id, id))
+  async findUserById(id: number) {
+    const [user] = await this.db.select().from(users).where(eq(users.id, id))
+    return user || null
   }
 
-  findUserByUserName(userName: string) {
-    return this.db.select().from(users).where(eq(users.userName, userName))
-  }
-
-  findUserByToken(token: string) {
-    return this.db
+  async findUserByUserName(userName: string) {
+    const [user] = await this.db
       .select()
       .from(users)
-      .innerJoin(tokens, eq(tokens.token, token))
+      .where(eq(users.userName, userName))
+    return user || null
   }
 
-  createUser(data: UserPayload) {
-    return this.db.insert(users).values(data).returning()
+  async findUserByToken(token: string) {
+    const result = await this.db
+      .select({
+        id: users.id,
+        fullName: users.fullName,
+        userName: users.userName,
+        passwordHash: users.passwordHash,
+        role: users.role
+      })
+      .from(users)
+      .innerJoin(tokens, eq(tokens.userId, users.id))
+      .where(eq(tokens.token, token))
+
+    return result[0] || null
   }
 
-  deleteUserById(id: number) {
-    return this.db.delete(users).where(eq(users.id, id)).returning()
+  async createUser(data: InsertUser) {
+    const [user] = await this.db.insert(users).values(data).returning()
+    return user
   }
 
-  updateUserById(id: number, data: Partial<UserPayload>) {
-    return this.db.update(users).set(data).where(eq(users.id, id)).returning()
+  async deleteUserById(id: number) {
+    const [user] = await this.db
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning()
+    return user || null
+  }
+
+  async updateUserById(id: number, data: Partial<InsertUser>) {
+    const [user] = await this.db
+      .update(users)
+      .set(data)
+      .where(eq(users.id, id))
+      .returning()
+    return user || null
   }
 }

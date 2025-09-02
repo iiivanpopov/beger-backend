@@ -1,4 +1,4 @@
-import { decodeJwt, jwtVerify, SignJWT } from 'jose'
+import { decodeJwt, type JWTVerifyResult, jwtVerify, SignJWT } from 'jose'
 import { CONFIG } from '@/config'
 import type { UserRole } from '@/db'
 
@@ -32,7 +32,7 @@ export const decode = <T extends object = UserJwtPayload>(token: string): T =>
 
 export const verify = async <T extends object = UserJwtPayload>(
   token: string
-): Promise<[true, T] | [false, undefined]> => {
+): Promise<[true, JWTVerifyResult<T>] | [false, undefined]> => {
   try {
     const payload = await jwtVerify(token, CONFIG.jwt.publicKey, {
       algorithms: ['ES256'],
@@ -40,7 +40,7 @@ export const verify = async <T extends object = UserJwtPayload>(
       audience: CONFIG.jwt.audience,
       requiredClaims: ['sub']
     })
-    return [true, payload as T]
+    return [true, payload as JWTVerifyResult<T>]
   } catch (error) {
     error
     return [false, undefined]

@@ -31,8 +31,8 @@ export class UserController {
       throw ApiError.Unauthorized('Invalid refresh token')
     }
 
-    const { role } = decode(accessToken)
-    if (role !== 'admin') {
+    const [_, decoded] = await verify(accessToken)
+    if (decoded?.payload.role !== 'admin') {
       throw ApiError.Forbidden('You must be an admin')
     }
 
