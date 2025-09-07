@@ -7,12 +7,12 @@ export const repairs = pgTable('repairs', {
   defect: varchar({ length: 255 }).notNull(),
   note: varchar({ length: 255 }),
   date: timestamp({ withTimezone: true }).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  userId: integer('user_id').references(() => users.id, {
-    onDelete: 'set null'
-  })
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'set null'
+    })
 })
 
 export type Repair = typeof repairs.$inferSelect

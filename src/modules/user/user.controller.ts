@@ -2,7 +2,7 @@ import type { Context } from 'hono'
 import { getCookie } from 'hono/cookie'
 import { CONFIG } from '@/config'
 import { ApiError } from '@/exceptions'
-import { decode, verify } from '@/utils'
+import { verify } from '@/utils'
 import type { UserService } from './user.service'
 
 export class UserController {

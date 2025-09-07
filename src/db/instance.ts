@@ -1,10 +1,9 @@
-import { BunSQLDatabase, drizzle } from 'drizzle-orm/bun-sql'
+import { type BunSQLDatabase, drizzle } from 'drizzle-orm/bun-sql'
 import { CONFIG } from '@/config'
 import * as relations from './relations'
-import * as schema from './tables'
+import * as tables from './tables'
 
-export const db = drizzle(CONFIG.database.url, {
-  schema: { ...schema, ...relations }
-})
+const schema = { ...tables, ...relations }
 
-export type Database = BunSQLDatabase<typeof schema & typeof relations>
+export const db = drizzle(CONFIG.database.url, { schema })
+export type Database = BunSQLDatabase<typeof schema>

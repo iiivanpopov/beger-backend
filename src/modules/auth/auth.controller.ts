@@ -3,7 +3,7 @@ import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { parse } from 'valibot'
 import { CONFIG } from '@/config'
 import { ApiError } from '@/exceptions'
-import { decode, verify } from '@/utils'
+import { verify } from '@/utils'
 import type { AuthService } from './auth.service'
 import { LoginSchema, RegisterSchema } from './schemas'
 

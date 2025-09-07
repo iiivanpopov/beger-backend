@@ -47,7 +47,8 @@ export class UserRepository {
         fullName: users.fullName,
         userName: users.userName,
         passwordHash: users.passwordHash,
-        role: users.role
+        role: users.role,
+        tokenId: tokens.id
       })
       .from(users)
       .innerJoin(tokens, eq(tokens.userId, users.id))

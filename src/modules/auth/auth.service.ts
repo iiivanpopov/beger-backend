@@ -13,7 +13,7 @@ export class AuthService {
   async register(userPayload: RegisterData) {
     const passwordHash = await hash(userPayload.password)
 
-    const [user] = await this.userRepository.createUser({
+    const user = await this.userRepository.createUser({
       passwordHash,
       fullName: userPayload.fullName,
       userName: userPayload.userName,
@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   async login(userPayload: LoginData) {
-    const [user] = await this.userRepository.findUserByUserName(
+    const user = await this.userRepository.findUserByUserName(
       userPayload.userName
     )
 
@@ -66,17 +66,17 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    const [user] = await this.userRepository.findUserByToken(refreshToken)
+    const user = await this.userRepository.findUserByToken(refreshToken)
     if (!user) {
       throw ApiError.NotFound('User not found')
     }
 
     const tokens = await signJWTs({
-      sub: user.users.id.toString(),
-      role: user.users.role
+      sub: user.id.toString(),
+      role: user.role
     })
 
-    await this.tokenRepository.updateTokenById(user.tokens.id, {
+    await this.tokenRepository.updateTokenById(user.tokenId, {
       token: tokens.refreshToken
     })
 

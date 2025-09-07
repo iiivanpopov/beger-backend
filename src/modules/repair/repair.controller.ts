@@ -3,7 +3,7 @@ import { getCookie } from 'hono/cookie'
 import { parse } from 'valibot'
 import { CONFIG } from '@/config'
 import { ApiError } from '@/exceptions'
-import { decode, verify } from '@/utils'
+import { verify } from '@/utils'
 import type { RepairService } from './repair.service'
 import { CreateRepairSchema } from './schemas/createRepair.schema'
 
@@ -11,7 +11,22 @@ export class RepairController {
   constructor(private repairService: RepairService) {}
 
   getRepairs = async (c: Context) => {
-    return c.json({ message: 'Get Repairs' })
+    const accessToken = getCookie(c, CONFIG.cookies.accessTokenName)
+    if (!accessToken) {
+      throw ApiError.Unauthorized('Missing accessToken token')
+    }
+
+    const [verified, decoded] = await verify(accessToken)
+    if (!verified) {
+      throw ApiError.Unauthorized()
+    }
+
+    const repairs = await this.repairService.repairRepository.findByUserId(
+      Number(decoded.payload.sub),
+      { limit: 10, latest: true }
+    )
+
+    return c.json({ repairs })
   }
 
   createRepair = async (c: Context) => {
@@ -23,20 +38,36 @@ export class RepairController {
       throw ApiError.Unauthorized('Missing accessToken token')
     }
 
-    const [_, decoded] = await verify(accessToken)
-    if (!decoded?.payload.sub) {
-      throw ApiError.Forbidden('UserId not found in token')
+    const [verified, decoded] = await verify(accessToken)
+    if (!verified) {
+      throw ApiError.Unauthorized()
     }
 
-    await this.repairService.repairRepository.createRepair({
-      ...parsed,
-      userId: Number(decoded.payload.sub)
-    })
-
+    await this.repairService.createRepair(parsed, Number(decoded.payload.sub))
     return c.json({ success: true }, 201)
   }
 
   deleteRepair = async (c: Context) => {
-    return c.json({ message: 'Delete Repair' })
+    const repairId = c.req.param('id')
+    if (!repairId) {
+      throw ApiError.BadRequest('Missing {id} param')
+    }
+
+    const accessToken = getCookie(c, CONFIG.cookies.accessTokenName)
+    if (!accessToken) {
+      throw ApiError.Unauthorized('Missing accessToken token')
+    }
+
+    const [verified, decoded] = await verify(accessToken)
+    if (!verified) {
+      throw ApiError.Unauthorized()
+    }
+
+    await this.repairService.repairRepository.delete(
+      Number(repairId),
+      Number(decoded.payload.sub)
+    )
+
+    return c.json({ success: true }, 200)
   }
 }

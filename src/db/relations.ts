@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm'
 import { repairs, tokens, users } from '@/db/tables'
-import { db } from './instance'
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
   user: one(users, {
