@@ -5,7 +5,12 @@ import { type InsertUser, tokens, users } from '@/db/tables'
 export class UserRepository {
   constructor(private db: Database) {}
 
-  async isUserExistsByUserName(userName: string): Promise<boolean> {
+  private async one<T>(query: Promise<T[]>): Promise<T | null> {
+    const rows = await query
+    return rows[0] ?? null
+  }
+
+  async existsByUserName(userName: string): Promise<boolean> {
     const [result] = await this.db
       .select({
         exists: sql<boolean>`EXISTS(SELECT 1 FROM users WHERE user_name = ${userName})`
@@ -16,7 +21,7 @@ export class UserRepository {
     return !!result?.exists
   }
 
-  async isUserExistsById(id: number): Promise<boolean> {
+  async existsById(id: number): Promise<boolean> {
     const [result] = await this.db
       .select({
         exists: sql<boolean>`EXISTS(SELECT 1 FROM users WHERE id = ${id})`
@@ -27,55 +32,47 @@ export class UserRepository {
     return !!result?.exists
   }
 
-  async findUserById(id: number) {
-    const [user] = await this.db.select().from(users).where(eq(users.id, id))
-    return user || null
+  findById(id: number) {
+    return this.one(
+      this.db.select().from(users).where(eq(users.id, id)).limit(1)
+    )
   }
 
-  async findUserByUserName(userName: string) {
-    const [user] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.userName, userName))
-    return user || null
+  findByUserName(userName: string) {
+    return this.one(
+      this.db.select().from(users).where(eq(users.userName, userName)).limit(1)
+    )
   }
 
-  async findUserByToken(token: string) {
-    const result = await this.db
-      .select({
-        id: users.id,
-        fullName: users.fullName,
-        userName: users.userName,
-        passwordHash: users.passwordHash,
-        role: users.role,
-        tokenId: tokens.id
-      })
-      .from(users)
-      .innerJoin(tokens, eq(tokens.userId, users.id))
-      .where(eq(tokens.token, token))
-
-    return result[0] || null
+  findByToken(token: string) {
+    return this.one(
+      this.db
+        .select({
+          id: users.id,
+          fullName: users.fullName,
+          userName: users.userName,
+          passwordHash: users.passwordHash,
+          role: users.role,
+          tokenId: tokens.id
+        })
+        .from(users)
+        .innerJoin(tokens, eq(tokens.userId, users.id))
+        .where(eq(tokens.token, token))
+        .limit(1)
+    )
   }
 
-  async createUser(data: InsertUser) {
-    const [user] = await this.db.insert(users).values(data).returning()
-    return user
+  create(data: InsertUser) {
+    return this.one(this.db.insert(users).values(data).returning())
   }
 
-  async deleteUserById(id: number) {
-    const [user] = await this.db
-      .delete(users)
-      .where(eq(users.id, id))
-      .returning()
-    return user || null
+  deleteById(id: number) {
+    return this.one(this.db.delete(users).where(eq(users.id, id)).returning())
   }
 
-  async updateUserById(id: number, data: Partial<InsertUser>) {
-    const [user] = await this.db
-      .update(users)
-      .set(data)
-      .where(eq(users.id, id))
-      .returning()
-    return user || null
+  updateById(id: number, data: Partial<InsertUser>) {
+    return this.one(
+      this.db.update(users).set(data).where(eq(users.id, id)).returning()
+    )
   }
 }

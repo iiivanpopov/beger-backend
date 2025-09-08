@@ -1,4 +1,4 @@
 # TODO
 
-- REFACTOR repositories
-- CREATE jwt middleware
+- CREATE `test results` module
+- CREATE get `selectable options` endpoints (fetch from public google sheets)

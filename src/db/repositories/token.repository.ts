@@ -5,48 +5,63 @@ import { type InsertToken, tokens } from '@/db/tables'
 export class TokenRepository {
   constructor(private db: Database) {}
 
-  findTokenById(id: number) {
-    return this.db.select().from(tokens).where(eq(tokens.id, id))
+  private async one<T>(query: Promise<T[]>): Promise<T | null> {
+    const rows = await query
+    return rows[0] ?? null
   }
 
-  createToken(data: InsertToken) {
-    return this.db.insert(tokens).values(data).returning()
+  findById(id: number) {
+    return this.one(
+      this.db.select().from(tokens).where(eq(tokens.id, id)).limit(1)
+    )
   }
 
-  deleteTokenById(id: number) {
-    return this.db.delete(tokens).where(eq(tokens.id, id)).returning()
+  create(data: InsertToken) {
+    return this.one(this.db.insert(tokens).values(data).returning())
   }
 
-  deleteTokenByUserId(id: number) {
-    return this.db.delete(tokens).where(eq(tokens.userId, id)).returning()
+  deleteById(id: number) {
+    return this.one(this.db.delete(tokens).where(eq(tokens.id, id)).returning())
   }
 
-  deleteTokenByToken(token: string) {
-    return this.db.delete(tokens).where(eq(tokens.token, token)).returning()
+  deleteByUserId(userId: number) {
+    return this.one(
+      this.db.delete(tokens).where(eq(tokens.userId, userId)).returning()
+    )
   }
 
-  updateTokenById(id: number, data: Partial<InsertToken>) {
-    return this.db.update(tokens).set(data).where(eq(tokens.id, id)).returning()
+  deleteByToken(token: string) {
+    return this.one(
+      this.db.delete(tokens).where(eq(tokens.token, token)).returning()
+    )
   }
 
-  updateTokenByUserId(userId: number, data: Partial<InsertToken>) {
-    return this.db
-      .update(tokens)
-      .set(data)
-      .where(eq(tokens.userId, userId))
-      .returning()
+  updateById(id: number, data: Partial<InsertToken>) {
+    return this.one(
+      this.db.update(tokens).set(data).where(eq(tokens.id, id)).returning()
+    )
   }
 
-  upsertToken(data: InsertToken) {
-    return this.db
-      .insert(tokens)
-      .values(data)
-      .onConflictDoUpdate({
-        target: tokens.userId,
-        set: {
-          token: data.token
-        }
-      })
-      .returning()
+  updateByUserId(userId: number, data: Partial<InsertToken>) {
+    return this.one(
+      this.db
+        .update(tokens)
+        .set(data)
+        .where(eq(tokens.userId, userId))
+        .returning()
+    )
+  }
+
+  upsert(data: InsertToken) {
+    return this.one(
+      this.db
+        .insert(tokens)
+        .values(data)
+        .onConflictDoUpdate({
+          target: tokens.userId,
+          set: { token: data.token }
+        })
+        .returning()
+    )
   }
 }

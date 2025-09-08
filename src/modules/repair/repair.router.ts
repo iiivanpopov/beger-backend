@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { CONFIG } from '@/config'
 import { db, RepairRepository, UserRepository } from '@/db'
+import { auth } from '@/middleware'
 import { RepairController } from './repair.controller'
 import { RepairService } from './repair.service'
 
@@ -12,6 +13,8 @@ const repairService = new RepairService(userRepository, repairRepository)
 const repairController = new RepairController(repairService)
 
 const routes = CONFIG.routes.records.repairs
+
+repairRouter.use(auth)
 
 repairRouter.get(routes.root, repairController.getRepairs)
 repairRouter.post(routes.root, repairController.createRepair)

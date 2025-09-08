@@ -7,13 +7,13 @@ import type { RegisterData } from './schemas/register.schema'
 export class AuthService {
   constructor(
     public userRepository: UserRepository,
-    private tokenRepository: TokenRepository
+    public tokenRepository: TokenRepository
   ) {}
 
   async register(userPayload: RegisterData) {
     const passwordHash = await hash(userPayload.password)
 
-    const user = await this.userRepository.createUser({
+    const user = await this.userRepository.create({
       passwordHash,
       fullName: userPayload.fullName,
       userName: userPayload.userName,
@@ -29,7 +29,7 @@ export class AuthService {
       role: user.role
     })
 
-    await this.tokenRepository.createToken({
+    await this.tokenRepository.create({
       token: tokens.refreshToken,
       userId: user.id
     })
@@ -38,9 +38,7 @@ export class AuthService {
   }
 
   async login(userPayload: LoginData) {
-    const user = await this.userRepository.findUserByUserName(
-      userPayload.userName
-    )
+    const user = await this.userRepository.findByUserName(userPayload.userName)
 
     if (!user) {
       throw ApiError.NotFound('User not found')
@@ -53,7 +51,7 @@ export class AuthService {
 
     const tokens = await signJWTs({ sub: user.id.toString(), role: user.role })
 
-    await this.tokenRepository.upsertToken({
+    await this.tokenRepository.upsert({
       token: tokens.refreshToken,
       userId: user.id
     })
@@ -62,11 +60,11 @@ export class AuthService {
   }
 
   async logout(refreshToken: string) {
-    await this.tokenRepository.deleteTokenByToken(refreshToken)
+    await this.tokenRepository.deleteByToken(refreshToken)
   }
 
   async refresh(refreshToken: string) {
-    const user = await this.userRepository.findUserByToken(refreshToken)
+    const user = await this.userRepository.findByToken(refreshToken)
     if (!user) {
       throw ApiError.NotFound('User not found')
     }
@@ -76,7 +74,7 @@ export class AuthService {
       role: user.role
     })
 
-    await this.tokenRepository.updateTokenById(user.tokenId, {
+    await this.tokenRepository.updateById(user.tokenId, {
       token: tokens.refreshToken
     })
 

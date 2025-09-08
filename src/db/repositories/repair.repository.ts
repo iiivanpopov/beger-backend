@@ -3,7 +3,7 @@ import type { Database } from '@/db/instance'
 import { type InsertRepair, repairs } from '@/db/tables'
 
 export class RepairRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private db: Database) {}
 
   async findById(id: number) {
     const result = await this.db

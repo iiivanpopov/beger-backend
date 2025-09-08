@@ -4,11 +4,17 @@ import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { CONFIG } from '@/config'
 import { error } from '@/middleware'
-import { log } from '@/utils'
+import { log, type UserJwtPayload } from '@/utils'
 import { router } from './router'
 
+type Env = {
+  Variables: {
+    user: UserJwtPayload
+  }
+}
+
 export const setup = async () => {
-  const app = new Hono()
+  const app = new Hono<Env>()
 
   app.onError(error)
 
