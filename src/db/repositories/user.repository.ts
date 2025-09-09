@@ -1,14 +1,10 @@
 import { eq, sql } from 'drizzle-orm'
 import type { Database } from '@/db/instance'
 import { type InsertUser, tokens, users } from '@/db/tables'
+import { one } from '@/utils'
 
 export class UserRepository {
   constructor(private db: Database) {}
-
-  private async one<T>(query: Promise<T[]>): Promise<T | null> {
-    const rows = await query
-    return rows[0] ?? null
-  }
 
   async existsByUserName(userName: string): Promise<boolean> {
     const [result] = await this.db
@@ -33,19 +29,17 @@ export class UserRepository {
   }
 
   findById(id: number) {
-    return this.one(
-      this.db.select().from(users).where(eq(users.id, id)).limit(1)
-    )
+    return one(this.db.select().from(users).where(eq(users.id, id)).limit(1))
   }
 
   findByUserName(userName: string) {
-    return this.one(
+    return one(
       this.db.select().from(users).where(eq(users.userName, userName)).limit(1)
     )
   }
 
   findByToken(token: string) {
-    return this.one(
+    return one(
       this.db
         .select({
           id: users.id,
@@ -63,15 +57,15 @@ export class UserRepository {
   }
 
   create(data: InsertUser) {
-    return this.one(this.db.insert(users).values(data).returning())
+    return one(this.db.insert(users).values(data).returning())
   }
 
   deleteById(id: number) {
-    return this.one(this.db.delete(users).where(eq(users.id, id)).returning())
+    return one(this.db.delete(users).where(eq(users.id, id)).returning())
   }
 
   updateById(id: number, data: Partial<InsertUser>) {
-    return this.one(
+    return one(
       this.db.update(users).set(data).where(eq(users.id, id)).returning()
     )
   }

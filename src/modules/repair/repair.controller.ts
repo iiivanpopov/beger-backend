@@ -3,7 +3,7 @@ import { parse } from 'valibot'
 import { ApiError } from '@/exceptions'
 import { type UserJwtPayload } from '@/utils'
 import type { RepairService } from './repair.service'
-import { CreateRepairSchema } from './schemas/createRepair.schema'
+import { CreateRepairSchema } from './schemas'
 
 export class RepairController {
   constructor(private repairService: RepairService) {}

@@ -1,18 +1,15 @@
 import { and, desc, eq } from 'drizzle-orm'
 import type { Database } from '@/db/instance'
 import { type InsertRepair, repairs } from '@/db/tables'
+import { one } from '@/utils'
 
 export class RepairRepository {
   constructor(private db: Database) {}
 
   async findById(id: number) {
-    const result = await this.db
-      .select()
-      .from(repairs)
-      .where(eq(repairs.id, id))
-      .limit(1)
-
-    return result[0] ?? null
+    return one(
+      this.db.select().from(repairs).where(eq(repairs.id, id)).limit(1)
+    )
   }
 
   async findByUserId(
@@ -28,19 +25,13 @@ export class RepairRepository {
   }
 
   async create(data: InsertRepair) {
-    const result = await this.db.insert(repairs).values(data).returning()
-
-    return result[0]
+    return one(this.db.insert(repairs).values(data).returning())
   }
 
   async update(id: number, data: Partial<InsertRepair>) {
-    const result = await this.db
-      .update(repairs)
-      .set(data)
-      .where(eq(repairs.id, id))
-      .returning()
-
-    return result[0] ?? null
+    return one(
+      this.db.update(repairs).set(data).where(eq(repairs.id, id)).returning()
+    )
   }
 
   async delete(id: number, userId?: number) {
@@ -49,11 +40,11 @@ export class RepairRepository {
       conditions.push(eq(repairs.userId, userId))
     }
 
-    const result = await this.db
-      .delete(repairs)
-      .where(and(...conditions))
-      .returning()
-
-    return result[0] ?? null
+    return one(
+      this.db
+        .delete(repairs)
+        .where(and(...conditions))
+        .returning()
+    )
   }
 }
