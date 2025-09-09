@@ -2,24 +2,25 @@ import type { Context } from 'hono'
 import { parse } from 'valibot'
 import { ApiError } from '@/exceptions'
 import { type UserJwtPayload } from '@/utils'
-import type { TestResultService } from './test-result.service'
 import { CreateTestResultSchema } from './schemas'
+import type { TestResultService } from './test-result.service'
 
 export class TestResultController {
   constructor(private testResultService: TestResultService) {}
 
-  getTestResults = async (c: Context) => {
+  async getTestResults(c: Context) {
     const user = c.var.user as UserJwtPayload
 
-    const results = await this.testResultService.testResultRepository.findByUserId(
-      Number(user.sub),
-      { limit: 10, latest: true }
-    )
+    const results =
+      await this.testResultService.testResultRepository.findByUserId(
+        Number(user.sub),
+        { limit: 10, latest: true }
+      )
 
     return c.json({ results }, 200)
   }
 
-  createTestResult = async (c: Context) => {
+  async createTestResult(c: Context) {
     const parsed = parse(CreateTestResultSchema, await c.req.json())
     const user = c.var.user as UserJwtPayload
 
@@ -31,7 +32,7 @@ export class TestResultController {
     return c.json({ success: true }, 201)
   }
 
-  deleteTestResult = async (c: Context) => {
+  async deleteTestResult(c: Context) {
     const resultId = c.req.param('id')
     if (!resultId) {
       throw ApiError.BadRequest('Missing {id} param')

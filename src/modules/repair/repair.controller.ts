@@ -8,7 +8,7 @@ import { CreateRepairSchema } from './schemas'
 export class RepairController {
   constructor(private repairService: RepairService) {}
 
-  getRepairs = async (c: Context) => {
+  async getRepairs(c: Context) {
     const user = c.var.user as UserJwtPayload
 
     const repairs = await this.repairService.repairRepository.findByUserId(
@@ -19,7 +19,7 @@ export class RepairController {
     return c.json({ repairs }, 200)
   }
 
-  createRepair = async (c: Context) => {
+  async createRepair(c: Context) {
     const parsed = parse(CreateRepairSchema, await c.req.json())
 
     const user = c.var.user as UserJwtPayload
@@ -32,7 +32,7 @@ export class RepairController {
     return c.json({ success: true }, 201)
   }
 
-  deleteRepair = async (c: Context) => {
+  async deleteRepair(c: Context) {
     const repairId = c.req.param('id')
     if (!repairId) {
       throw ApiError.BadRequest('Missing {id} param')

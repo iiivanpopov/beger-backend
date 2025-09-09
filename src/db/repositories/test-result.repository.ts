@@ -6,16 +6,13 @@ import { one } from '@/utils'
 export class TestResultRepository {
   constructor(private db: Database) {}
 
-  async findById(id: number) {
+  findById(id: number) {
     return one(
       this.db.select().from(testResults).where(eq(testResults.id, id)).limit(1)
     )
   }
 
-  async findByUserId(
-    userId: number,
-    opts?: { limit?: number; latest?: boolean }
-  ) {
+  findByUserId(userId: number, opts?: { limit?: number; latest?: boolean }) {
     return this.db
       .select()
       .from(testResults)
@@ -24,11 +21,11 @@ export class TestResultRepository {
       .limit(opts?.limit ?? 100)
   }
 
-  async create(data: InsertTestResult) {
+  create(data: InsertTestResult) {
     return one(this.db.insert(testResults).values(data).returning())
   }
 
-  async update(id: number, data: Partial<InsertTestResult>) {
+  update(id: number, data: Partial<InsertTestResult>) {
     return one(
       this.db
         .update(testResults)
@@ -38,7 +35,7 @@ export class TestResultRepository {
     )
   }
 
-  async delete(id: number, userId?: number) {
+  delete(id: number, userId?: number) {
     const conditions = [eq(testResults.id, id)]
     if (userId !== undefined) {
       conditions.push(eq(testResults.userId, userId))

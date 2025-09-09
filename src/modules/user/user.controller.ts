@@ -6,7 +6,7 @@ import type { UserService } from './user.service'
 export class UserController {
   constructor(private userService: UserService) {}
 
-  deactivate = async (c: Context) => {
+  async deactivate(c: Context) {
     const userId = c.req.param('id')
     if (!userId) {
       throw ApiError.BadRequest('Missing {id} param')

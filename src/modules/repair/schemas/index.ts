@@ -1,1 +1,1 @@
-export * from './createRepair.schema'
+export * from './create-repair.schema'

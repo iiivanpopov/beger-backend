@@ -19,6 +19,15 @@ const routes = CONFIG.routes.records.test_results
 
 testResultRouter.use(auth)
 
-testResultRouter.get(routes.root, testResultController.getTestResults)
-testResultRouter.post(routes.root, testResultController.createTestResult)
-testResultRouter.delete(routes.by_id, testResultController.deleteTestResult)
+testResultRouter.get(
+  routes.root,
+  testResultController.getTestResults.bind(testResultController)
+)
+testResultRouter.post(
+  routes.root,
+  testResultController.createTestResult.bind(testResultController)
+)
+testResultRouter.delete(
+  routes.by_id,
+  testResultController.deleteTestResult.bind(testResultController)
+)

@@ -16,4 +16,4 @@ const routes = CONFIG.routes.user
 
 userRouter.use(auth)
 
-userRouter.delete(routes.by_id, userController.deactivate)
+userRouter.delete(routes.by_id, userController.deactivate.bind(userController))

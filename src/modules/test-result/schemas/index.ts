@@ -1,1 +1,1 @@
-export * from './createTestResult.schema'
+export * from './create-test-result.schema'

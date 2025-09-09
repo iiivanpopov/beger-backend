@@ -34,7 +34,7 @@ export class AuthController {
     deleteCookie(c, CONFIG.cookies.refreshTokenName)
   }
 
-  login = async (c: Context): Promise<Response> => {
+  async login(c: Context): Promise<Response> {
     const parsed = parse(LoginSchema, await c.req.json())
 
     const userExists = await this.authService.userRepository.existsByUserName(
@@ -53,7 +53,7 @@ export class AuthController {
     return c.json(tokens, 200)
   }
 
-  register = async (c: Context): Promise<Response> => {
+  async register(c: Context): Promise<Response> {
     const userPayload = parse(RegisterSchema, await c.req.json())
 
     const accessToken = getCookie(c, CONFIG.cookies.accessTokenName)
@@ -79,7 +79,7 @@ export class AuthController {
     return c.json(tokens, 201)
   }
 
-  logout = async (c: Context): Promise<Response> => {
+  async logout(c: Context): Promise<Response> {
     const refreshToken = getCookie(c, CONFIG.cookies.refreshTokenName)
 
     const isVerified = await verify(refreshToken ?? '')
@@ -94,7 +94,7 @@ export class AuthController {
     return c.json({ success: true }, 200)
   }
 
-  refresh = async (c: Context): Promise<Response> => {
+  async refresh(c: Context): Promise<Response> {
     const refreshToken = getCookie(c, CONFIG.cookies.refreshTokenName)
     if (!refreshToken) {
       throw ApiError.Unauthorized('Missing refresh token')

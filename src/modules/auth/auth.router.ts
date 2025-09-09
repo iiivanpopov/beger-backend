@@ -13,7 +13,7 @@ const authController = new AuthController(authService)
 
 const routes = CONFIG.routes.auth
 
-authRouter.post(routes.login, authController.login)
-authRouter.post(routes.register, authController.register)
-authRouter.post(routes.logout, authController.logout)
-authRouter.post(routes.refresh, authController.refresh)
+authRouter.post(routes.login, authController.login.bind(authController))
+authRouter.post(routes.register, authController.register.bind(authController))
+authRouter.post(routes.logout, authController.logout.bind(authController))
+authRouter.post(routes.refresh, authController.refresh.bind(authController))

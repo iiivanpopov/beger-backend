@@ -16,6 +16,15 @@ const routes = CONFIG.routes.records.repairs
 
 repairRouter.use(auth)
 
-repairRouter.get(routes.root, repairController.getRepairs)
-repairRouter.post(routes.root, repairController.createRepair)
-repairRouter.delete(routes.by_id, repairController.deleteRepair)
+repairRouter.get(
+  routes.root,
+  repairController.getRepairs.bind(repairController)
+)
+repairRouter.post(
+  routes.root,
+  repairController.createRepair.bind(repairController)
+)
+repairRouter.delete(
+  routes.by_id,
+  repairController.deleteRepair.bind(repairController)
+)
