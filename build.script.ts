@@ -9,6 +9,7 @@ const external = [
   'hono',
   'dotenv',
   'drizzle-orm',
+  'memcached',
   'jose',
   'valibot',
   ...builtinModules

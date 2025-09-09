@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import {
   authRouter,
+  optionsRouter,
   repairRouter,
   testResultRouter,
   userRouter
@@ -12,3 +13,4 @@ router.route('/auth', authRouter)
 router.route('/user', userRouter)
 router.route('/records/repairs', repairRouter)
 router.route('/records/test-results', testResultRouter)
+router.route('/options', optionsRouter)

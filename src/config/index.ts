@@ -19,7 +19,11 @@ export const envSchema = object({
   DB_HOST: string(),
   DB_PORT: string(),
 
-  DATABASE_URL: string()
+  DATABASE_URL: string(),
+
+  SHEET_URL: string(),
+
+  CACHE_URL: string()
 })
 
 const parsedEnv = parse(envSchema, process.env)
@@ -66,6 +70,14 @@ export async function createConfig() {
       refreshTokenName: 'refreshToken',
       accessTokenMaxAge: 900,
       refreshTokenMaxAge: 604800
+    },
+
+    options: {
+      sheetUrl: parsedEnv.SHEET_URL
+    },
+
+    cache: {
+      URL: parsedEnv.CACHE_URL
     }
   }
 }

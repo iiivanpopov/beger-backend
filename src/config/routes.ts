@@ -19,5 +19,8 @@ export const ROUTES_CONFIG = {
       root: '/',
       by_id: ':id'
     }
+  },
+  options: {
+    root: '/'
   }
 } as const
