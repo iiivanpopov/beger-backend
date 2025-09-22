@@ -21,7 +21,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],
-			"@/db/*": ["src/db/*"],
+			"@/database/*": ["src/database/*"],
 			"@/app/*": ["src/app/*"],
 			"@/utils/*": ["src/utils/*"],
 			"@/config/*": ["src/config/*"],
@@ -29,7 +29,7 @@
 			"@/exceptions/*": ["src/exceptions/*"],
 			"@/middleware/*": ["src/middleware/*"],
 
-			"@/db": ["src/db/index.ts"],
+			"@/database": ["src/database/index.ts"],
 			"@/app": ["src/app/index.ts"],
 			"@/utils": ["src/utils/index.ts"],
 			"@/config": ["src/config/index.ts"],
@@ -37,5 +37,5 @@
 			"@/exceptions": ["src/exceptions/index.ts"],
 			"@/middleware": ["src/middleware/index.ts"],
 		}
-	},
+	}
 }

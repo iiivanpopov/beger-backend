@@ -1,85 +1,34 @@
-import { importJWK } from 'jose'
-import { object, optional, parse, string } from 'valibot'
-import { ROUTES_CONFIG } from './routes'
-import 'dotenv/config'
+export const config = {
+  server: {
+    port: import.meta.env.PORT!
+  },
 
-// ----- ENV VALIDATION -----
-export const envSchema = object({
-  PORT: string(),
-  NODE_ENV: optional(string()),
+  database: {
+    url: import.meta.env.DATABASE_URL!
+  },
 
-  JWT_PRIVATE_KEY: string(),
-  JWT_PUBLIC_KEY: string(),
+  jwt: {
+    secret: import.meta.env.JWT_SECRET!,
+    accessExpiresIn: 15 * 60,
+    refreshExpiresIn: 60 * 60
+  },
 
-  ADMIN_PASSWORD: string(),
+  cookies: {
+    accessTokenName: 'accessToken',
+    refreshTokenName: 'refreshToken'
+  },
 
-  DB_USER: string(),
-  DB_PASSWORD: string(),
-  DB_NAME: string(),
-  DB_HOST: string(),
-  DB_PORT: string(),
+  options: {
+    sheetUrl: import.meta.env.SHEET_URL!
+  },
 
-  DATABASE_URL: string(),
-
-  SHEET_URL: string(),
-
-  CACHE_URL: string()
-})
-
-const parsedEnv = parse(envSchema, process.env)
-
-// ----- JWT KEYS LOADING -----
-async function loadJwtKeys() {
-  const privateJwk = JSON.parse(parsedEnv.JWT_PRIVATE_KEY)
-  const publicJwk = JSON.parse(parsedEnv.JWT_PUBLIC_KEY)
-
-  const privateKey = await importJWK(privateJwk, 'ES256')
-  const publicKey = await importJWK(publicJwk, 'ES256')
-
-  return { privateKey, publicKey }
-}
-
-// ----- CONFIG FACTORY -----
-export async function createConfig() {
-  const keys = await loadJwtKeys()
-
-  return {
-    server: {
-      port: parsedEnv.PORT
-    },
-
-    database: {
-      url: parsedEnv.DATABASE_URL
-    },
-
-    jwt: {
-      privateKey: keys.privateKey,
-      publicKey: keys.publicKey,
-      accessExpiration: '15m',
-      refreshExpiration: '7d',
-      issuer: 'beger-backend',
-      audience: 'beger-frontend'
-    },
-
-    routes: ROUTES_CONFIG,
-
-    nodeEnv: parsedEnv.NODE_ENV ?? 'development',
-
-    cookies: {
-      accessTokenName: 'accessToken',
-      refreshTokenName: 'refreshToken',
-      accessTokenMaxAge: 900,
-      refreshTokenMaxAge: 604800
-    },
-
-    options: {
-      sheetUrl: parsedEnv.SHEET_URL
-    },
-
-    cache: {
-      URL: parsedEnv.CACHE_URL
+  cache: {
+    url: import.meta.env.CACHE_URL!,
+    fields: {
+      options: {
+        key: 'options',
+        ttl: 60 * 5
+      }
     }
   }
 }
-
-export const CONFIG = await createConfig()

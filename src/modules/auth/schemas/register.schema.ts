@@ -1,10 +1,15 @@
 import { type InferOutput, minLength, object, pipe, string } from 'valibot'
-
-const MIN_USERNAME_LEN = 3
-const MIN_PASSWORD_LEN = 6
-const MIN_FULLNAME_LEN = 8
+import {
+  MIN_FULLNAME_LEN,
+  MIN_PASSWORD_LEN,
+  MIN_USERNAME_LEN
+} from './schemas.config'
 
 export const RegisterSchema = object({
+  userName: pipe(
+    string('Field must be a string'),
+    minLength(MIN_USERNAME_LEN, `Minimal userName length: ${MIN_USERNAME_LEN}`)
+  ),
   password: pipe(
     string('Field must be a string'),
     minLength(MIN_PASSWORD_LEN, `Minimal password length: ${MIN_PASSWORD_LEN}`)
@@ -12,10 +17,6 @@ export const RegisterSchema = object({
   fullName: pipe(
     string('Field must be a string'),
     minLength(MIN_FULLNAME_LEN, `Minimal fullName length: ${MIN_FULLNAME_LEN}`)
-  ),
-  userName: pipe(
-    string('Field must be a string'),
-    minLength(MIN_USERNAME_LEN, `Minimal userName length: ${MIN_USERNAME_LEN}`)
   )
 })
 

@@ -1,83 +1,91 @@
-import type { TokenRepository, UserRepository } from '@/db'
+import { eq } from 'drizzle-orm'
+import { db, tokensTable, usersTable } from '@/database'
 import { ApiError } from '@/exceptions'
-import { compare, hash, signJWTs } from '@/utils'
-import type { LoginData } from './schemas'
-import type { RegisterData } from './schemas/register.schema'
+import { signJWTs } from '@/utils'
+import type { LoginData, RegisterData } from './schemas'
 
-export class AuthService {
-  constructor(
-    public userRepository: UserRepository,
-    public tokenRepository: TokenRepository
-  ) {}
+export const register = async (userPayload: RegisterData) => {
+  const [userExists] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.userName, userPayload.userName))
+  if (userExists) throw ApiError.BadRequest('User already exists')
 
-  async register(userPayload: RegisterData) {
-    const passwordHash = await hash(userPayload.password)
-
-    const user = await this.userRepository.create({
+  const passwordHash = await Bun.password.hash(userPayload.password)
+  const [user] = await db
+    .insert(usersTable)
+    .values({
       passwordHash,
       fullName: userPayload.fullName,
       userName: userPayload.userName,
       role: 'user'
     })
+    .returning()
+  if (!user) throw ApiError.InternalServerError()
 
-    if (!user) {
-      throw ApiError.InternalError('User creation failed')
-    }
+  const signedTokens = await signJWTs({
+    sub: String(user.id),
+    role: user.role
+  })
+  await db.insert(tokensTable).values({
+    token: signedTokens.refreshToken,
+    userId: user.id
+  })
 
-    const tokens = await signJWTs({
-      sub: user.id.toString(),
-      role: user.role
-    })
+  return signedTokens
+}
 
-    await this.tokenRepository.create({
-      token: tokens.refreshToken,
+export const login = async (userPayload: LoginData) => {
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.userName, userPayload.userName))
+  if (!user) throw ApiError.NotFound()
+
+  const isVerified = Bun.password.verify(
+    userPayload.password,
+    user.passwordHash
+  )
+  if (!isVerified) throw ApiError.Unauthorized()
+
+  const signedTokens = await signJWTs({
+    sub: String(user.id),
+    role: user.role
+  })
+  await db
+    .insert(tokensTable)
+    .values({
+      token: signedTokens.refreshToken,
       userId: user.id
     })
-
-    return tokens
-  }
-
-  async login(userPayload: LoginData) {
-    const user = await this.userRepository.findByUserName(userPayload.userName)
-
-    if (!user) {
-      throw ApiError.NotFound('User not found')
-    }
-
-    const isPasswordEquals = compare(userPayload.password, user.passwordHash)
-    if (!isPasswordEquals) {
-      throw ApiError.Unauthorized('Password does not match')
-    }
-
-    const tokens = await signJWTs({ sub: user.id.toString(), role: user.role })
-
-    await this.tokenRepository.upsert({
-      token: tokens.refreshToken,
-      userId: user.id
+    .onConflictDoUpdate({
+      set: { token: signedTokens.refreshToken },
+      target: tokensTable.userId
     })
 
-    return tokens
-  }
+  return signedTokens
+}
 
-  async logout(refreshToken: string) {
-    await this.tokenRepository.deleteByToken(refreshToken)
-  }
+export const logout = async (userId: number) => {
+  await db.delete(tokensTable).where(eq(tokensTable.userId, userId))
+}
 
-  async refresh(refreshToken: string) {
-    const user = await this.userRepository.findByToken(refreshToken)
-    if (!user) {
-      throw ApiError.NotFound('User not found')
-    }
+export const refresh = async (userId: number) => {
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+  if (!user) throw ApiError.NotFound()
 
-    const tokens = await signJWTs({
-      sub: user.id.toString(),
-      role: user.role
-    })
+  const signedTokens = await signJWTs({
+    sub: String(userId),
+    role: user.role
+  })
 
-    await this.tokenRepository.updateById(user.tokenId, {
-      token: tokens.refreshToken
-    })
+  await db
+    .update(tokensTable)
+    .set({ token: signedTokens.refreshToken })
+    .where(eq(tokensTable.userId, userId))
 
-    return tokens
-  }
+  return signedTokens
 }

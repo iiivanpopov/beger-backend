@@ -1,7 +1,7 @@
 import Memcached from 'memcached'
-import { CONFIG } from '@/config'
+import { config } from '@/config'
 
-export const memcached = new Memcached(CONFIG.cache.URL)
+export const memcached = new Memcached(config.cache.url)
 
 export async function setCache(
   key: string,
@@ -23,4 +23,19 @@ export async function getCache<T>(key: string): Promise<T | null> {
       else resolve((data as T) || null)
     })
   })
+}
+
+export const withCache = async <T>(
+  key: string,
+  loader: () => Promise<T>,
+  ttl: number
+) => {
+  const cached = await getCache(key)
+  if (cached) return cached
+
+  const data = await loader()
+
+  await setCache(key, data, ttl)
+
+  return data
 }

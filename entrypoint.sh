@@ -13,7 +13,7 @@ seed_database() {
 
 start_app() {
   echo "[INFO] Starting application..."
-  exec bun start
+  exec bun start:prod
 }
 
 main() {

@@ -21,7 +21,7 @@
       "error",
       { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
     ],
-    "typescript/no-non-null-assertion": "error",
+    "typescript/no-non-null-assertion": "off",
     "typescript/no-unsafe-assignment": "warn",
     "typescript/prefer-nullish-coalescing": "warn",
     "import/no-cycle": "error",

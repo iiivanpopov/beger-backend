@@ -1,9 +1,7 @@
 import pino from 'pino'
 
-const isProduction = process.env.NODE_ENV === 'production'
-
 export const log = pino({
-  level: isProduction ? 'info' : 'debug',
+  level: 'info',
   transport: {
     target: 'pino-pretty',
     options: {

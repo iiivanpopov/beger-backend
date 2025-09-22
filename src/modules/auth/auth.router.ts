@@ -1,19 +1,71 @@
-import { Hono } from 'hono'
-import { CONFIG } from '@/config'
-import { db, TokenRepository, UserRepository } from '@/db'
-import { AuthController } from './auth.controller'
-import { AuthService } from './auth.service'
+import { vValidator } from '@hono/valibot-validator'
+import { eq } from 'drizzle-orm'
+import { deleteCookie } from 'hono/cookie'
+import { config } from '@/config'
+import { db, usersTable } from '@/database'
+import { ApiError } from '@/exceptions'
+import {
+  accessJwtMiddleware,
+  refreshJwtMiddleware
+} from '@/middleware/jwt.middleware'
+import { setCookieTokens } from '@/utils/cookie'
+import { createRouter } from '@/utils/hono'
+import { login, logout, refresh, register } from './auth.service'
+import { LoginSchema, RegisterSchema } from './schemas'
 
-export const authRouter = new Hono()
+export const authRouter = createRouter()
 
-const userRepository = new UserRepository(db)
-const tokenRepository = new TokenRepository(db)
-const authService = new AuthService(userRepository, tokenRepository)
-const authController = new AuthController(authService)
+authRouter.post('/login', vValidator('json', LoginSchema), async c => {
+  const body = c.req.valid('json')
 
-const routes = CONFIG.routes.auth
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.userName, body.userName))
+  if (!user) throw ApiError.NotFound()
 
-authRouter.post(routes.login, authController.login.bind(authController))
-authRouter.post(routes.register, authController.register.bind(authController))
-authRouter.post(routes.logout, authController.logout.bind(authController))
-authRouter.post(routes.refresh, authController.refresh.bind(authController))
+  const tokens = await login(body)
+
+  setCookieTokens(c, tokens)
+
+  return c.json({ data: tokens, success: true }, 200)
+})
+
+authRouter.post(
+  '/register',
+  vValidator('json', RegisterSchema),
+  accessJwtMiddleware,
+  async c => {
+    const body = c.req.valid('json')
+    const jwtPayload = c.get('jwtPayload')
+
+    if (jwtPayload?.role !== 'admin') throw ApiError.Forbidden()
+
+    const tokens = await register(body)
+
+    setCookieTokens(c, tokens)
+
+    return c.json({ data: tokens, success: true }, 201)
+  }
+)
+
+authRouter.post('/logout', refreshJwtMiddleware, async c => {
+  const jwtPayload = c.get('jwtPayload')
+
+  await logout(Number(jwtPayload.sub))
+
+  deleteCookie(c, config.cookies.accessTokenName)
+  deleteCookie(c, config.cookies.refreshTokenName)
+
+  return c.json({ success: true }, 200)
+})
+
+authRouter.post('/refresh', refreshJwtMiddleware, async c => {
+  const jwtPayload = c.get('jwtPayload')
+
+  const tokens = await refresh(Number(jwtPayload.sub))
+
+  setCookieTokens(c, tokens)
+
+  return c.json({ data: tokens, success: true }, 200)
+})

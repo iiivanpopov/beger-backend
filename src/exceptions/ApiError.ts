@@ -31,7 +31,10 @@ export class ApiError extends Error {
     return new ApiError(message, 404, details)
   }
 
-  static InternalError(message = 'Internal Server Error', details?: unknown) {
+  static InternalServerError(
+    message = 'Internal Server Error',
+    details?: unknown
+  ) {
     return new ApiError(message, 500, details)
   }
 

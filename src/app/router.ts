@@ -1,16 +1,16 @@
-import { Hono } from 'hono'
 import {
   authRouter,
   optionsRouter,
-  repairRouter,
-  testResultRouter,
-  userRouter
+  repairsRouter,
+  testResultsRouter,
+  usersRouter
 } from '@/modules'
+import { createRouter } from '@/utils'
 
-export const router = new Hono()
+export const router = createRouter()
 
 router.route('/auth', authRouter)
-router.route('/user', userRouter)
-router.route('/records/repairs', repairRouter)
-router.route('/records/test-results', testResultRouter)
+router.route('/users', usersRouter)
+router.route('/records/repairs', repairsRouter)
+router.route('/records/test-results', testResultsRouter)
 router.route('/options', optionsRouter)

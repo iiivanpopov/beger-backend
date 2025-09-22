@@ -1,38 +1,32 @@
 import path from 'node:path'
-import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
-import { CONFIG } from '@/config'
-import { error } from '@/middleware'
-import { log, type UserJwtPayload } from '@/utils'
+import { config } from '@/config'
+import { errorMiddleware } from '@/middleware'
+import { createRouter, log } from '@/utils'
 import { router } from './router'
 
-type Env = {
-  Variables: {
-    user: UserJwtPayload
-  }
-}
-
 export const setup = async () => {
-  const app = new Hono<Env>()
+  const app = createRouter()
 
-  app.onError(error)
+  app.onError(errorMiddleware)
 
   app.use(cors())
   app.use(logger())
 
   app.route('/api', router)
 
-  const baseUrl = CONFIG.nodeEnv === 'development' ? '/' : import.meta.dirname
-  Bun.serve({
-    port: CONFIG.server.port,
+  const baseUrl =
+    import.meta.env.NODE_ENV === 'development' ? '/' : import.meta.dirname
+  const server = Bun.serve({
+    port: config.server.port,
     tls: {
       key: Bun.file(path.resolve(baseUrl, './certs/key.pem')),
       cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem'))
     },
     fetch: app.fetch,
-    development: CONFIG.nodeEnv !== 'production'
+    development: import.meta.env.NODE_ENV !== 'production'
   })
 
-  log.info(`HTTPS server running on https://localhost:${CONFIG.server.port}`)
+  log.info(`Listening ${server.url}`)
 }
