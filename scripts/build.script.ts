@@ -9,6 +9,8 @@ const external = [
   'memcached',
   '@hono/valibot-validator',
   'valibot',
+  'postgres',
+  'drizzle-kit',
   'pino',
   'pino-pretty',
   ...builtinModules

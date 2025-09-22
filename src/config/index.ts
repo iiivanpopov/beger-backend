@@ -1,14 +1,14 @@
 export const config = {
   server: {
-    port: import.meta.env.PORT!
+    port: process.env.PORT!
   },
 
   database: {
-    url: import.meta.env.DATABASE_URL!
+    url: process.env.DATABASE_URL!
   },
 
   jwt: {
-    secret: import.meta.env.JWT_SECRET!,
+    secret: process.env.JWT_SECRET!,
     accessExpiresIn: 15 * 60,
     refreshExpiresIn: 60 * 60
   },
@@ -19,11 +19,11 @@ export const config = {
   },
 
   options: {
-    sheetUrl: import.meta.env.SHEET_URL!
+    sheetUrl: process.env.SHEET_URL!
   },
 
   cache: {
-    url: import.meta.env.CACHE_URL!,
+    url: process.env.CACHE_URL!,
     fields: {
       options: {
         key: 'options',

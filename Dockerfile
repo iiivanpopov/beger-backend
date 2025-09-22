@@ -10,7 +10,7 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV=production
-RUN bun run build
+RUN bun run build:prod
 
 FROM base AS prod-deps
 COPY package.json bun.lock ./
@@ -23,8 +23,6 @@ WORKDIR /app
 
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
-
-RUN bun i drizzle-kit 
 
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist

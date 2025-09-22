@@ -14,10 +14,17 @@ export const setup = async () => {
   app.use(cors())
   app.use(logger())
 
+  app.get('/health', c =>
+    c.json({
+      status: 'ok',
+      timestamp: new Date().toISOString()
+    })
+  )
+
   app.route('/api', router)
 
   const baseUrl =
-    import.meta.env.NODE_ENV === 'development' ? '/' : import.meta.dirname
+    process.env.NODE_ENV === 'development' ? '/' : import.meta.dirname
   const server = Bun.serve({
     port: config.server.port,
     tls: {
@@ -25,7 +32,7 @@ export const setup = async () => {
       cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem'))
     },
     fetch: app.fetch,
-    development: import.meta.env.NODE_ENV !== 'production'
+    development: process.env.NODE_ENV !== 'production'
   })
 
   log.info(`Listening ${server.url}`)
