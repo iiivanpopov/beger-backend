@@ -2,7 +2,7 @@ import { vValidator } from '@hono/valibot-validator'
 import { accessJwtMiddleware } from '@/middleware'
 import { createRouter } from '@/utils'
 import { createRepair, deleteRepair, getLastRepairs } from './repair.service'
-import { CreateRepairSchema, DeleteRepairSchema } from './schemas'
+import { CreateRepairBody, DeleteRepairParams } from './schemas'
 
 export const repairsRouter = createRouter()
 
@@ -16,7 +16,7 @@ repairsRouter.get('/', async c => {
   return c.json({ data: repairs, success: true }, 200)
 })
 
-repairsRouter.post('/', vValidator('json', CreateRepairSchema), async c => {
+repairsRouter.post('/', vValidator('json', CreateRepairBody), async c => {
   const body = c.req.valid('json')
   const jwtPayload = c.get('jwtPayload')
 
@@ -27,7 +27,7 @@ repairsRouter.post('/', vValidator('json', CreateRepairSchema), async c => {
 
 repairsRouter.delete(
   '/:id',
-  vValidator('param', DeleteRepairSchema),
+  vValidator('param', DeleteRepairParams),
   async c => {
     const repairId = c.req.valid('param').id
 

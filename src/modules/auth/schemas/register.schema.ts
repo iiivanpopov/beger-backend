@@ -1,23 +1,28 @@
-import { type InferOutput, minLength, object, pipe, string } from 'valibot'
-import {
-  MIN_FULLNAME_LEN,
-  MIN_PASSWORD_LEN,
-  MIN_USERNAME_LEN
-} from './schemas.config'
+import * as v from 'valibot'
+import { config } from '@/config'
 
-export const RegisterSchema = object({
-  userName: pipe(
-    string('Field must be a string'),
-    minLength(MIN_USERNAME_LEN, `Minimal userName length: ${MIN_USERNAME_LEN}`)
+export const RegisterBody = v.object({
+  userName: v.pipe(
+    v.string('Field must be a string'),
+    v.minLength(
+      config.validation.MIN_USERNAME_LEN,
+      `Minimal userName length: ${config.validation.MIN_USERNAME_LEN}`
+    )
   ),
-  password: pipe(
-    string('Field must be a string'),
-    minLength(MIN_PASSWORD_LEN, `Minimal password length: ${MIN_PASSWORD_LEN}`)
+  password: v.pipe(
+    v.string('Field must be a string'),
+    v.minLength(
+      config.validation.MIN_PASSWORD_LEN,
+      `Minimal password length: ${config.validation.MIN_PASSWORD_LEN}`
+    )
   ),
-  fullName: pipe(
-    string('Field must be a string'),
-    minLength(MIN_FULLNAME_LEN, `Minimal fullName length: ${MIN_FULLNAME_LEN}`)
+  fullName: v.pipe(
+    v.string('Field must be a string'),
+    v.minLength(
+      config.validation.MIN_FULLNAME_LEN,
+      `Minimal fullName length: ${config.validation.MIN_FULLNAME_LEN}`
+    )
   )
 })
 
-export type RegisterData = InferOutput<typeof RegisterSchema>
+export type RegisterData = v.InferOutput<typeof RegisterBody>

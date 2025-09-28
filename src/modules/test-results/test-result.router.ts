@@ -1,7 +1,7 @@
 import { vValidator } from '@hono/valibot-validator'
 import { accessJwtMiddleware } from '@/middleware'
 import { createRouter } from '@/utils'
-import { CreateTestResultSchema, DeleteTestResultSchema } from './schemas'
+import { CreateTestResultBody, DeleteTestResultParams } from './schemas'
 import {
   createTestResult,
   deleteTestResult,
@@ -22,7 +22,7 @@ testResultsRouter.get('/', async c => {
 
 testResultsRouter.post(
   '/',
-  vValidator('json', CreateTestResultSchema),
+  vValidator('json', CreateTestResultBody),
   async c => {
     const body = c.req.valid('json')
     const jwtPayload = c.get('jwtPayload')
@@ -35,7 +35,7 @@ testResultsRouter.post(
 
 testResultsRouter.delete(
   '/:id',
-  vValidator('param', DeleteTestResultSchema),
+  vValidator('param', DeleteTestResultParams),
   async c => {
     const testResultId = c.req.valid('param').id
 

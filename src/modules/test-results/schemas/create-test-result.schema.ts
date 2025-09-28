@@ -1,35 +1,32 @@
-import {
-  date,
-  type InferOutput,
-  maxLength,
-  minLength,
-  minValue,
-  number,
-  object,
-  pipe,
-  string,
-  transform
-} from 'valibot'
+import * as v from 'valibot'
+import { config } from '@/config'
 
-const MIN_PCB_NAME_LEN = 1
-
-export const CreateTestResultSchema = object({
-  pcbName: pipe(
-    string('Field must be a string'),
-    minLength(MIN_PCB_NAME_LEN, `Minimal pcbName length: ${MIN_PCB_NAME_LEN}`),
-    maxLength(255, 'Max pcbName length: 255')
+export const CreateTestResultBody = v.object({
+  pcbName: v.pipe(
+    v.string('Field must be a string'),
+    v.minLength(
+      config.validation.MIN_PCB_NAME_LEN,
+      `Minimal pcbName length: ${config.validation.MIN_PCB_NAME_LEN}`
+    ),
+    v.maxLength(255, 'Max pcbName length: 255')
   ),
-  passedFirstTry: pipe(
-    number('Field must be a number'),
-    minValue(0, 'Must be >= 0')
+  passedFirstTry: v.pipe(
+    v.number('Field must be a number'),
+    v.minValue(0, 'Must be >= 0')
   ),
-  failed: pipe(number('Field must be a number'), minValue(0, 'Must be >= 0')),
-  total: pipe(number('Field must be a number'), minValue(0, 'Must be >= 0')),
-  date: pipe(
-    string('Field must be a string'),
-    transform((input: string) => new Date(input)),
-    date('Field must be a valid date')
+  failed: v.pipe(
+    v.number('Field must be a number'),
+    v.minValue(0, 'Must be >= 0')
+  ),
+  total: v.pipe(
+    v.number('Field must be a number'),
+    v.minValue(0, 'Must be >= 0')
+  ),
+  date: v.pipe(
+    v.string('Field must be a string'),
+    v.transform((input: string) => new Date(input)),
+    v.date('Field must be a valid date')
   )
 })
 
-export type CreateTestResultData = InferOutput<typeof CreateTestResultSchema>
+export type CreateTestResultData = v.InferOutput<typeof CreateTestResultBody>

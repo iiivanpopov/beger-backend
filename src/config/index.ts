@@ -35,6 +35,8 @@ export const config = {
   validation: {
     MIN_USERNAME_LEN: 3,
     MIN_PASSWORD_LEN: 6,
-    MIN_FULLNAME_LEN: 8
+    MIN_FULLNAME_LEN: 8,
+    MIN_PCB_NAME_LEN: 1,
+    MIN_DEFECT_LEN: 1
   }
 }

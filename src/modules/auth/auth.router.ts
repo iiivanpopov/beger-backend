@@ -11,11 +11,11 @@ import {
 import { setCookieTokens } from '@/utils/cookie'
 import { createRouter } from '@/utils/hono'
 import { login, logout, refresh, register } from './auth.service'
-import { LoginSchema, RegisterSchema } from './schemas'
+import { LoginBody, RegisterBody } from './schemas'
 
 export const authRouter = createRouter()
 
-authRouter.post('/login', vValidator('json', LoginSchema), async c => {
+authRouter.post('/login', vValidator('json', LoginBody), async c => {
   const body = c.req.valid('json')
 
   const [user] = await db
@@ -33,7 +33,7 @@ authRouter.post('/login', vValidator('json', LoginSchema), async c => {
 
 authRouter.post(
   '/register',
-  vValidator('json', RegisterSchema),
+  vValidator('json', RegisterBody),
   accessJwtMiddleware,
   async c => {
     const body = c.req.valid('json')

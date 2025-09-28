@@ -1,6 +1,5 @@
 export * from './cookie'
 export * from './csv'
-export * from './database'
 export * from './hono'
 export * from './jwt'
 export * from './logger'

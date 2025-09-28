@@ -1,15 +1,21 @@
-import { type InferOutput, minLength, object, pipe, string } from 'valibot'
-import { MIN_PASSWORD_LEN, MIN_USERNAME_LEN } from './schemas.config'
+import * as v from 'valibot'
+import { config } from '@/config'
 
-export const LoginSchema = object({
-  userName: pipe(
-    string('Field must be a string'),
-    minLength(MIN_USERNAME_LEN, `Minimal userName length: ${MIN_USERNAME_LEN}`)
+export const LoginBody = v.object({
+  userName: v.pipe(
+    v.string('Field must be a string'),
+    v.minLength(
+      config.validation.MIN_USERNAME_LEN,
+      `Minimal userName length: ${config.validation.MIN_USERNAME_LEN}`
+    )
   ),
-  password: pipe(
-    string('Field must be a string'),
-    minLength(MIN_PASSWORD_LEN, `Minimal password length: ${MIN_PASSWORD_LEN}`)
+  password: v.pipe(
+    v.string('Field must be a string'),
+    v.minLength(
+      config.validation.MIN_PASSWORD_LEN,
+      `Minimal password length: ${config.validation.MIN_PASSWORD_LEN}`
+    )
   )
 })
 
-export type LoginData = InferOutput<typeof LoginSchema>
+export type LoginData = v.InferOutput<typeof LoginBody>
