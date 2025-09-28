@@ -2,6 +2,7 @@ import { sign, verify } from 'hono/jwt'
 import type { JWTPayload } from 'hono/utils/jwt/types'
 import { config } from '@/config'
 import type { UserRole } from '@/database'
+import type { AppContext } from './hono'
 
 export type UserJwtPayload = { sub: string; role: UserRole }
 
@@ -29,3 +30,6 @@ export const verifyJWT = async (
   secret: string
 ): Promise<JWTPayload & UserJwtPayload> =>
   verify(token, secret) as Promise<JWTPayload & UserJwtPayload>
+
+export const getUserId = (c: AppContext) => Number(c.get('jwtPayload').sub)
+export const getUserRole = (c: AppContext) => c.get('jwtPayload').role

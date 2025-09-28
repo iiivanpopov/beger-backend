@@ -1,21 +1,40 @@
 import { vValidator } from '@hono/valibot-validator'
+import { ApiError } from '@/exceptions'
 import { accessJwtMiddleware } from '@/middleware'
-import { createRouter } from '@/utils'
-import { CreateTestResultBody, DeleteTestResultParams } from './schemas'
+import {
+  createRouter,
+  getUserId,
+  getUserRole,
+  IdParam,
+  PaginationQuery
+} from '@/utils'
+import { CreateTestResultBody } from './schemas'
 import {
   createTestResult,
+  deleteSafeTestResult,
   deleteTestResult,
-  getLastTestResults
+  getTestResults,
+  getUserTestResults
 } from './test-result.service'
 
 export const testResultsRouter = createRouter()
 
 testResultsRouter.use(accessJwtMiddleware)
 
-testResultsRouter.get('/', async c => {
-  const jwtPayload = c.get('jwtPayload')
+testResultsRouter.get('/me', async c => {
+  const userId = getUserId(c)
 
-  const testResults = await getLastTestResults(Number(jwtPayload.sub))
+  const testResults = await getUserTestResults(userId)
+
+  return c.json({ data: testResults, success: true }, 200)
+})
+
+testResultsRouter.get('/', vValidator('query', PaginationQuery), async c => {
+  const queryParams = c.req.valid('query')
+  const userRole = getUserRole(c)
+  if (userRole !== 'admin') throw ApiError.Forbidden()
+
+  const testResults = await getTestResults(queryParams)
 
   return c.json({ data: testResults, success: true }, 200)
 })
@@ -25,22 +44,21 @@ testResultsRouter.post(
   vValidator('json', CreateTestResultBody),
   async c => {
     const body = c.req.valid('json')
-    const jwtPayload = c.get('jwtPayload')
+    const userId = getUserId(c)
 
-    const testResult = await createTestResult(Number(jwtPayload.sub), body)
+    const testResult = await createTestResult(userId, body)
 
     return c.json({ data: testResult, success: true }, 201)
   }
 )
 
-testResultsRouter.delete(
-  '/:id',
-  vValidator('param', DeleteTestResultParams),
-  async c => {
-    const testResultId = c.req.valid('param').id
+testResultsRouter.delete('/:id', vValidator('param', IdParam), async c => {
+  const userRole = getUserRole(c)
+  const userId = getUserId(c)
+  const testResultId = c.req.valid('param').id
 
-    await deleteTestResult(testResultId)
+  if (userRole === 'user') await deleteSafeTestResult(userId, testResultId)
+  else if (userRole === 'admin') await deleteTestResult(testResultId)
 
-    return c.json({ success: true }, 200)
-  }
-)
+  return c.json({ success: true }, 200)
+})

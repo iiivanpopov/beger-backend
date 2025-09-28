@@ -1,8 +1,8 @@
-import { Hono } from 'hono'
 import { accessJwtMiddleware } from '@/middleware'
+import { createRouter } from '@/utils'
 import { fetchOptions } from './options.service'
 
-export const optionsRouter = new Hono()
+export const optionsRouter = createRouter()
 
 optionsRouter.get('/', accessJwtMiddleware, async c => {
   const options = await fetchOptions()

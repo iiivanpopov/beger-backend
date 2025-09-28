@@ -8,6 +8,7 @@ import {
   accessJwtMiddleware,
   refreshJwtMiddleware
 } from '@/middleware/jwt.middleware'
+import { getUserId, getUserRole } from '@/utils'
 import { setCookieTokens } from '@/utils/cookie'
 import { createRouter } from '@/utils/hono'
 import { login, logout, refresh, register } from './auth.service'
@@ -37,9 +38,8 @@ authRouter.post(
   accessJwtMiddleware,
   async c => {
     const body = c.req.valid('json')
-    const jwtPayload = c.get('jwtPayload')
-
-    if (jwtPayload?.role !== 'admin') throw ApiError.Forbidden()
+    const userRole = getUserRole(c)
+    if (userRole !== 'admin') throw ApiError.Forbidden()
 
     const tokens = await register(body)
 
@@ -48,9 +48,9 @@ authRouter.post(
 )
 
 authRouter.post('/logout', refreshJwtMiddleware, async c => {
-  const jwtPayload = c.get('jwtPayload')
+  const userId = getUserId(c)
 
-  await logout(Number(jwtPayload.sub))
+  await logout(userId)
 
   deleteCookie(c, config.cookies.accessTokenName)
   deleteCookie(c, config.cookies.refreshTokenName)
@@ -59,9 +59,9 @@ authRouter.post('/logout', refreshJwtMiddleware, async c => {
 })
 
 authRouter.post('/refresh', refreshJwtMiddleware, async c => {
-  const jwtPayload = c.get('jwtPayload')
+  const userId = getUserId(c)
 
-  const tokens = await refresh(Number(jwtPayload.sub))
+  const tokens = await refresh(userId)
 
   setCookieTokens(c, tokens)
 

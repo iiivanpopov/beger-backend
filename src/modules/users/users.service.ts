@@ -1,4 +1,4 @@
-import { and, eq, not } from 'drizzle-orm'
+import { and, desc, eq, not } from 'drizzle-orm'
 import { db, type InsertUser, toUserDTO, usersTable } from '@/database'
 import { ApiError } from '@/exceptions'
 
@@ -12,11 +12,14 @@ export const getUser = async (userId: number) => {
   return toUserDTO(user)
 }
 
-export const getAllUsers = async () => {
+export const getAllUsers = async ({ offset = 0, limit = 10 }) => {
   const users = await db
     .select()
     .from(usersTable)
     .where(eq(usersTable.role, 'user'))
+    .limit(limit)
+    .offset(offset)
+    .orderBy(desc(usersTable.createdAt))
 
   return users.map(toUserDTO)
 }

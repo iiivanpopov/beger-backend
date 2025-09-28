@@ -18,11 +18,4 @@ export const UpdateUserBody = v.object({
   )
 })
 
-export const UpdateUserParams = v.object({
-  id: v.pipe(
-    v.string('Field must be a string'),
-    v.transform(input => Number(input))
-  )
-})
-
 export type UpdateUserData = v.InferOutput<typeof UpdateUserBody>

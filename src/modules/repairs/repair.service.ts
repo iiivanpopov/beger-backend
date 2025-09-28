@@ -1,19 +1,36 @@
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq, gte, sql } from 'drizzle-orm'
 import { db, type InsertRepair, repairsTable } from '@/database'
+import { ApiError } from '@/exceptions'
 
-export const getLastRepairs = async (userId: number) =>
+export const getUserRepairs = async (userId: number) => {
+  const repairs = await db
+    .select()
+    .from(repairsTable)
+    .where(
+      and(
+        eq(repairsTable.userId, userId),
+        gte(repairsTable.createdAt, sql`NOW() - interval '1 day'`)
+      )
+    )
+    .limit(10)
+    .orderBy(desc(repairsTable.createdAt))
+
+  return repairs
+}
+
+export const getRepairs = async ({ offset = 0, limit = 10 }) =>
   db
     .select()
     .from(repairsTable)
-    .where(eq(repairsTable.userId, userId))
-    .limit(10)
+    .limit(limit)
+    .offset(offset)
     .orderBy(desc(repairsTable.createdAt))
 
 export const createRepair = async (
   userId: number,
   payload: Omit<InsertRepair, 'createdAt' | 'userId'>
-) =>
-  db
+) => {
+  const [repair] = await db
     .insert(repairsTable)
     .values({
       userId,
@@ -23,6 +40,37 @@ export const createRepair = async (
       date: payload.date
     })
     .returning()
+  if (!repair) throw ApiError.InternalServerError()
+
+  return repair
+}
+
+export const deleteSafeRepair = async (
+  userId: number,
+  testResultId: number
+) => {
+  const [testResult] = await db
+    .select()
+    .from(repairsTable)
+    .where(
+      and(
+        eq(repairsTable.id, testResultId),
+        eq(repairsTable.userId, userId),
+        gte(repairsTable.createdAt, sql`NOW() - interval '1 day'`)
+      )
+    )
+  if (!testResult) throw ApiError.NotFound()
+
+  await db
+    .delete(repairsTable)
+    .where(
+      and(
+        eq(repairsTable.id, testResultId),
+        eq(repairsTable.userId, userId),
+        gte(repairsTable.createdAt, sql`NOW() - interval '1 day'`)
+      )
+    )
+}
 
 export const deleteRepair = async (repairId: number) =>
   db.delete(repairsTable).where(eq(repairsTable.id, repairId))
