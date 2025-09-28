@@ -43,8 +43,6 @@ authRouter.post(
 
     const tokens = await register(body)
 
-    setCookieTokens(c, tokens)
-
     return c.json({ data: tokens, success: true }, 201)
   }
 )

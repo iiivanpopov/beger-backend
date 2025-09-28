@@ -30,5 +30,11 @@ export const config = {
         ttl: 60 * 5
       }
     }
+  },
+
+  validation: {
+    MIN_USERNAME_LEN: 3,
+    MIN_PASSWORD_LEN: 6,
+    MIN_FULLNAME_LEN: 8
   }
 }

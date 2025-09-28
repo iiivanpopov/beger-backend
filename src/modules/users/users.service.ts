@@ -1,5 +1,5 @@
 import { and, eq, not } from 'drizzle-orm'
-import { db, toUserDTO, usersTable } from '@/database'
+import { db, type InsertUser, toUserDTO, usersTable } from '@/database'
 import { ApiError } from '@/exceptions'
 
 export const getUser = async (userId: number) => {
@@ -12,11 +12,40 @@ export const getUser = async (userId: number) => {
   return toUserDTO(user)
 }
 
+export const getAllUsers = async () => {
+  const users = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.role, 'user'))
+
+  return users.map(toUserDTO)
+}
+
+export const updateUser = async (
+  userId: number,
+  payload: Partial<InsertUser>
+) => {
+  const [userExists] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+  if (!userExists) throw ApiError.NotFound()
+
+  const [user] = await db
+    .update(usersTable)
+    .set(payload)
+    .where(eq(usersTable.id, userId))
+    .returning()
+  if (!user) throw ApiError.InternalServerError()
+
+  return toUserDTO(user)
+}
+
 export const deleteUser = async (userId: number) => {
   const [userExists] = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.id, Number(userId)))
+    .where(eq(usersTable.id, userId))
   if (!userExists) throw ApiError.NotFound()
 
   await db
