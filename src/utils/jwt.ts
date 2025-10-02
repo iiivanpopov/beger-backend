@@ -8,7 +8,8 @@ export type UserJwtPayload = { sub: string; role: UserRole }
 
 export const signJWT = async (
   { sub, role }: UserJwtPayload,
-  expiresIn: number
+  expiresIn: number,
+  secret: string
 ) =>
   sign(
     {
@@ -17,12 +18,16 @@ export const signJWT = async (
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + expiresIn
     },
-    config.jwt.secret
+    secret
   )
 
 export const signJWTs = async (payload: UserJwtPayload) => ({
-  accessToken: await signJWT(payload, config.jwt.accessExpiresIn),
-  refreshToken: await signJWT(payload, config.jwt.refreshExpiresIn)
+  accessToken: await signJWT(payload, config.jwt.accessExpiresIn, config.jwt.accessSecret),
+  refreshToken: await signJWT(
+    payload,
+    config.jwt.refreshExpiresIn,
+    config.jwt.refreshSecret
+  )
 })
 
 export const verifyJWT = async (

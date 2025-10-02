@@ -1,6 +1,5 @@
 import { vValidator } from '@hono/valibot-validator'
-import { ApiError } from '@/exceptions'
-import { accessJwtMiddleware } from '@/middleware'
+import { accessJwtMiddleware, roleMiddleware } from '@/middleware'
 import {
   createRouter,
   getUserId,
@@ -29,15 +28,18 @@ testResultsRouter.get('/me', async c => {
   return c.json({ data: testResults, success: true }, 200)
 })
 
-testResultsRouter.get('/', vValidator('query', PaginationQuery), async c => {
-  const queryParams = c.req.valid('query')
-  const userRole = getUserRole(c)
-  if (userRole !== 'admin') throw ApiError.Forbidden()
+testResultsRouter.get(
+  '/',
+  vValidator('query', PaginationQuery),
+  roleMiddleware(['admin']),
+  async c => {
+    const queryParams = c.req.valid('query')
 
-  const testResults = await getTestResults(queryParams)
+    const testResults = await getTestResults(queryParams)
 
-  return c.json({ data: testResults, success: true }, 200)
-})
+    return c.json({ data: testResults, success: true }, 200)
+  }
+)
 
 testResultsRouter.post(
   '/',

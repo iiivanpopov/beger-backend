@@ -1,14 +1,12 @@
 import { vValidator } from '@hono/valibot-validator'
-import { eq } from 'drizzle-orm'
-import { deleteCookie } from 'hono/cookie'
+import { deleteCookie, getCookie } from 'hono/cookie'
 import { config } from '@/config'
-import { db, usersTable } from '@/database'
-import { ApiError } from '@/exceptions'
+import { roleMiddleware } from '@/middleware'
 import {
   accessJwtMiddleware,
   refreshJwtMiddleware
 } from '@/middleware/jwt.middleware'
-import { getUserId, getUserRole } from '@/utils'
+import { getUserId } from '@/utils'
 import { setCookieTokens } from '@/utils/cookie'
 import { createRouter } from '@/utils/hono'
 import { login, logout, refresh, register } from './auth.service'
@@ -18,12 +16,6 @@ export const authRouter = createRouter()
 
 authRouter.post('/login', vValidator('json', LoginBody), async c => {
   const body = c.req.valid('json')
-
-  const [user] = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.userName, body.userName))
-  if (!user) throw ApiError.NotFound()
 
   const tokens = await login(body)
 
@@ -36,14 +28,13 @@ authRouter.post(
   '/register',
   vValidator('json', RegisterBody),
   accessJwtMiddleware,
+  roleMiddleware(['admin']),
   async c => {
     const body = c.req.valid('json')
-    const userRole = getUserRole(c)
-    if (userRole !== 'admin') throw ApiError.Forbidden()
 
-    const tokens = await register(body)
+    const user = await register(body)
 
-    return c.json({ data: tokens, success: true }, 201)
+    return c.json({ data: user, success: true }, 201)
   }
 )
 
@@ -59,9 +50,10 @@ authRouter.post('/logout', refreshJwtMiddleware, async c => {
 })
 
 authRouter.post('/refresh', refreshJwtMiddleware, async c => {
+  const refreshToken = getCookie(c, config.cookies.refreshTokenName)!
   const userId = getUserId(c)
 
-  const tokens = await refresh(userId)
+  const tokens = await refresh(userId, refreshToken)
 
   setCookieTokens(c, tokens)
 

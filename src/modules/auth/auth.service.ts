@@ -32,7 +32,7 @@ export const register = async (userPayload: RegisterData) => {
     userId: user.id
   })
 
-  return signedTokens
+  return user
 }
 
 export const login = async (userPayload: LoginData) => {
@@ -42,7 +42,7 @@ export const login = async (userPayload: LoginData) => {
     .where(eq(usersTable.userName, userPayload.userName))
   if (!user) throw ApiError.NotFound()
 
-  const isVerified = Bun.password.verify(
+  const isVerified = await Bun.password.verify(
     userPayload.password,
     user.passwordHash
   )
@@ -70,12 +70,16 @@ export const logout = async (userId: number) => {
   await db.delete(tokensTable).where(eq(tokensTable.userId, userId))
 }
 
-export const refresh = async (userId: number) => {
+export const refresh = async (userId: number, requestedToken: string) => {
   const [user] = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.id, userId))
-  if (!user) throw ApiError.NotFound()
+    .select({
+      role: usersTable.role,
+      token: tokensTable.token
+    })
+    .from(tokensTable)
+    .innerJoin(usersTable, eq(usersTable.id, tokensTable.userId))
+    .where(eq(tokensTable.userId, userId))
+  if (!user || user.token !== requestedToken) throw ApiError.Unauthorized()
 
   const signedTokens = await signJWTs({
     sub: String(userId),
