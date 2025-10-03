@@ -1,11 +1,4 @@
 export const baseDoc = {
-  openapi: '3.0.0',
-  info: {
-    title: 'Beger Backend API',
-    version: '1.0.0',
-    description: 'OpenAPI documentation for Beger Backend API'
-  },
-  servers: [{ url: '/api' }],
   components: {
     securitySchemes: {
       cookieAuth: { type: 'apiKey', in: 'cookie', name: 'accessToken' },
