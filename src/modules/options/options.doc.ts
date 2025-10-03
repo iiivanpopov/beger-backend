@@ -3,7 +3,20 @@ export const optionsDoc = {
     schemas: {
       OptionsResponse: {
         type: 'object',
-        additionalProperties: { type: 'array', items: { type: 'string' } }
+        properties: {
+          pcb: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          defect: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          }
+        }
       }
     }
   },

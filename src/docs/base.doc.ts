@@ -77,10 +77,6 @@ export const baseDoc = {
           date: { type: 'string', format: 'date-time' },
           createdAt: { type: 'string', format: 'date-time' }
         }
-      },
-      OptionsResponse: {
-        type: 'object',
-        additionalProperties: { type: 'array', items: { type: 'string' } }
       }
     }
   },
