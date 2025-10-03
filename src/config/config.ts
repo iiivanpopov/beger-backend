@@ -31,7 +31,7 @@ export const config = {
   },
 
   cache: {
-    url: env.CACHE_URL,
+    url: env.MEMCACHED_URL,
     fields: {
       options: {
         key: 'options',

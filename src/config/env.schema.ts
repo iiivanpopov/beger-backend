@@ -15,6 +15,6 @@ export const EnvSchema = v.object({
   JWT_ACCESS_SECRET: v.string('JWT_ACCESS_SECRET is required'),
   JWT_REFRESH_SECRET: v.string('JWT_REFRESH_SECRET is required'),
   SHEET_URL: v.string('SHEET_URL is required'),
-  CACHE_URL: v.string('CACHE_URL is required'),
+  MEMCACHED_URL: v.string('MEMCACHED_URL is required'),
   ADMIN_PASSWORD: v.string('ADMIN_PASSWORD is required')
 })
