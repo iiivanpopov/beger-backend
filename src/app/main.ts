@@ -11,6 +11,16 @@ export const setup = async () => {
 
   app.onError(errorMiddleware)
 
+  if (config.isDevelopment) {
+    const [{ openApiDocs }, { swaggerUI }] = await Promise.all([
+      import('@/docs'),
+      import('@hono/swagger-ui')
+    ])
+
+    app.get('/doc', c => c.json(openApiDocs))
+    app.get('/ui', swaggerUI({ url: '/doc' }))
+  }
+
   app.use(cors())
   app.use(logger())
 
@@ -24,7 +34,7 @@ export const setup = async () => {
   app.route('/api', router)
 
   const baseUrl =
-    process.env.NODE_ENV === 'development' ? '/' : import.meta.dirname
+    config.isDevelopment ? '/' : import.meta.dirname
   const server = Bun.serve({
     port: config.server.port,
     tls: {
@@ -32,7 +42,7 @@ export const setup = async () => {
       cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem'))
     },
     fetch: app.fetch,
-    development: process.env.NODE_ENV !== 'production'
+    development: config.isProduction
   })
 
   log.info(`Listening ${server.url}`)

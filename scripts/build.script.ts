@@ -8,6 +8,9 @@ const external = [
   'drizzle-orm',
   'memcached',
   '@hono/valibot-validator',
+  // Keep docs and swagger out of bundles
+  '@hono/swagger-ui',
+  '@/docs',
   'valibot',
   'postgres',
   'drizzle-kit',

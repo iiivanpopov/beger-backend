@@ -17,14 +17,15 @@
 		"valibot": "^1.1.0"
 	},
 	"devDependencies": {
+		"@hono/swagger-ui": "^0.5.2",
 		"@biomejs/biome": "^2.2.5",
-		"pino-pretty": "^13.1.1",
 		"@types/bun": "^1.2.23",
 		"@types/memcached": "^2.2.10",
 		"cpy-cli": "^6.0.0",
 		"cross-env": "^10.1.0",
-		"rimraf": "^6.0.1",
 		"oxlint": "^1.19.0",
+		"pino-pretty": "^13.1.1",
+		"rimraf": "^6.0.1",
 		"typescript": "^5.9.3"
 	},
 	"scripts": {
@@ -32,6 +33,7 @@
 		"build:prod": "cross-env NODE_ENV=production bun scripts/build.script.ts",
 		"start:dev": "cross-env NODE_ENV=development bun --watch src/index.ts",
 		"start:prod": "cross-env NODE_ENV=production bun dist/index.mjs",
+		"start:prod:dev": "cross-env NODE_ENV=development bun dist/index.mjs",
 		"test": "bun test",
 		"lint": "oxlint . --fix",
 		"format": "biome format --write .",
