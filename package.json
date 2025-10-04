@@ -23,6 +23,7 @@
     "@types/memcached": "^2.2.10",
     "cpy-cli": "^6.0.0",
     "cross-env": "^10.1.0",
+    "esbuild": "^0.25.10",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
     "oxlint": "^1.19.0",
@@ -33,8 +34,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "bun run clean && cpy certs dist",
-    "build:dev": "bun run prebuild && cross-env NODE_ENV=development bun scripts/build.script.ts",
-    "build:prod": "bun run prebuild && cross-env NODE_ENV=production bun scripts/build.script.ts",
+    "build:dev": "bun run prebuild && cross-env NODE_ENV=development bun scripts/esbuild.script.ts",
+    "build:prod": "bun run prebuild && cross-env NODE_ENV=production bun scripts/esbuild.script.ts",
     "start:dev": "cross-env NODE_ENV=development bun --watch src/index.ts",
     "start:dist:dev": "cross-env NODE_ENV=development bun dist/index.mjs",
     "start:dist:prod": "cross-env NODE_ENV=production bun dist/index.mjs",
