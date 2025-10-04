@@ -35,7 +35,7 @@
     "clean": "rimraf dist",
     "prebuild": "bun run clean && cpy certs dist",
     "build:dev": "bun run prebuild && cross-env NODE_ENV=development bun scripts/esbuild.script.ts",
-    "build:prod": "bun run prebuild && cross-env NODE_ENV=production bun scripts/esbuild.script.ts",
+    "build:prod": "bun run prebuild && cross-env NODE_ENV=production bun scripts/esbuild.script.ts | bun pino-pretty --colorize",
     "start:dev": "cross-env NODE_ENV=development bun --watch src/index.ts",
     "start:dist:dev": "cross-env NODE_ENV=development bun dist/index.mjs",
     "start:dist:prod": "cross-env NODE_ENV=production bun dist/index.mjs",

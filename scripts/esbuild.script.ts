@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { build } from 'esbuild';
+import { log } from '@/utils';
 import { esbuildConfig } from '../esbuild.config';
 
 try {
@@ -7,18 +8,18 @@ try {
 
   if (result.errors.length > 0) {
     result.errors.forEach((error) => {
-      console.error(error.text);
+      log.error(error.text);
     });
     throw new Error('Build errors');
   }
 
   if (result.warnings.length > 0) {
     result.warnings.forEach((warning) => {
-      console.warn(warning.text);
+      log.warn(warning.text);
     });
   }
 
-  console.log('\nBundle sizes:');
+  log.info('Bundle sizes:');
   if (result.metafile) {
     const outputs = Object.keys(result.metafile.outputs);
     let totalSize = 0;
@@ -28,14 +29,14 @@ try {
       if (size) {
         const sizeKB = (size / 1024).toFixed(2);
         const sizeMB = (size / (1024 * 1024)).toFixed(2);
-        console.log(`  ${output}: ${sizeKB} KB (${sizeMB} MB)`);
+        log.info(`${output}: ${sizeKB} KB (${sizeMB} MB)`);
         totalSize += size;
       }
     });
 
     const totalKB = (totalSize / 1024).toFixed(2);
     const totalMB = (totalSize / (1024 * 1024)).toFixed(2);
-    console.log(`\nTotal size: ${totalKB} KB (${totalMB} MB)`);
+    log.info(`Total size: ${totalKB} KB (${totalMB} MB)`);
   } else {
     try {
       const files = ['dist/index.mjs', 'dist/seed.script.mjs'];
@@ -46,21 +47,21 @@ try {
           const stats = readFileSync(file);
           const sizeKB = (stats.length / 1024).toFixed(2);
           const sizeMB = (stats.length / (1024 * 1024)).toFixed(2);
-          console.log(`  ${file}: ${sizeKB} KB (${sizeMB} MB)`);
+          log.info(`${file}: ${sizeKB} KB (${sizeMB} MB)`);
           totalSize += stats.length;
         } catch {
-          console.log(`  ${file}: not found`);
+          log.info(`${file}: not found`);
         }
       });
 
       const totalKB = (totalSize / 1024).toFixed(2);
       const totalMB = (totalSize / (1024 * 1024)).toFixed(2);
-      console.log(`\nTotal size: ${totalKB} KB (${totalMB} MB)`);
+      log.info(`\nTotal size: ${totalKB} KB (${totalMB} MB)`);
     } catch {
-      console.log('  Failed to get file sizes');
+      log.info('Failed to get file sizes');
     }
   }
 } catch (error) {
-  console.error(error);
+  log.error(error);
   throw error;
 }
