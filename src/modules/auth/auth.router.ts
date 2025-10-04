@@ -2,11 +2,10 @@ import { vValidator } from '@hono/valibot-validator';
 import { deleteCookie, getCookie } from 'hono/cookie';
 import { config } from '@/config';
 import { accessJwtMiddleware, refreshJwtMiddleware, roleMiddleware } from '@/middleware';
-import { getUserId } from '@/utils';
-import { setCookieTokens } from '@/utils/cookie';
-import { createRouter } from '@/utils/hono';
+import { createRouter, getUserId, setCookieTokens } from '@/utils';
 import { login, logout, refresh, register } from './auth.service';
-import { LoginBody, RegisterBody } from './schemas';
+import { LoginBody } from './schemas/login.schema';
+import { RegisterBody } from './schemas/register.schema';
 
 export const authRouter = createRouter();
 

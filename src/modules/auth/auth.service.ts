@@ -2,7 +2,8 @@ import { eq } from 'drizzle-orm';
 import { db, tokensTable, usersTable } from '@/database';
 import { ApiError } from '@/exceptions';
 import { signJWTs } from '@/utils';
-import type { LoginData, RegisterData } from './schemas';
+import type { LoginData } from './schemas/login.schema';
+import type { RegisterData } from './schemas/register.schema';
 
 export const register = async (userPayload: RegisterData) => {
   const [userExists] = await db

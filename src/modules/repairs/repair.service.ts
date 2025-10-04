@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
-import type { InsertRepair } from '@/database';
 import { db, repairsTable } from '@/database';
+import type { InsertRepair } from '@/database/tables';
 import { ApiError } from '@/exceptions';
 
 export const getUserRepairs = async (userId: number) => {

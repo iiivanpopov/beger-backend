@@ -1,1 +1,1 @@
-export * from './docs';
+export { openApiDocs } from './docs';

@@ -1,7 +1,7 @@
 import { sign, verify } from 'hono/jwt';
 import type { JWTPayload } from 'hono/utils/jwt/types';
 import { config } from '@/config';
-import type { UserRole } from '@/database';
+import type { UserRole } from '@/database/tables';
 import type { AppContext } from './hono';
 
 export interface UserJwtPayload {

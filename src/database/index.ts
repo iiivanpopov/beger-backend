@@ -1,2 +1,9 @@
-export * from './instance';
-export * from './tables';
+export { type Database, db } from './instance';
+export {
+  repairsTable,
+  rolesEnum,
+  testResultsTable,
+  tokensTable,
+  toUserDTO,
+  usersTable,
+} from './tables';

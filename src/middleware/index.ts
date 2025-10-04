@@ -1,3 +1,3 @@
-export * from './error.middleware';
-export * from './jwt.middleware';
-export * from './role.middleware';
+export { errorMiddleware } from './error.middleware';
+export { accessJwtMiddleware, refreshJwtMiddleware } from './jwt.middleware';
+export { roleMiddleware } from './role.middleware';

@@ -1,6 +1,6 @@
 import { and, desc, eq, not } from 'drizzle-orm';
-import type { InsertUser } from '@/database';
 import { db, toUserDTO, usersTable } from '@/database';
+import type { InsertUser } from '@/database/tables';
 import { ApiError } from '@/exceptions';
 
 export const getUser = async (userId: number) => {

@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
-import type { InsertTestResult } from '@/database';
 import { db, testResultsTable } from '@/database';
+import type { InsertTestResult } from '@/database/tables';
 import { ApiError } from '@/exceptions';
 
 export const getUserTestResults = async (userId: number) =>

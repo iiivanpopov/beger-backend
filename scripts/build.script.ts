@@ -22,6 +22,7 @@ const build = async () => {
       entry: '[name].mjs',
     },
     external,
+    splitting: true,
     define: {
       'process.env.NODE_ENV': JSON.stringify(config.nodeEnv),
     },

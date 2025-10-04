@@ -2,7 +2,7 @@ import { vValidator } from '@hono/valibot-validator';
 import { ApiError } from '@/exceptions';
 import { accessJwtMiddleware } from '@/middleware';
 import { createRouter, getUserId, getUserRole, IdParam, PaginationQuery } from '@/utils';
-import { UpdateUserBody } from './schemas';
+import { UpdateUserBody } from './schemas/update-user.schema';
 import { deleteUser, getAllUsers, getUser, updateUser } from './users.service';
 
 export const usersRouter = createRouter();

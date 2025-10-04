@@ -1,7 +1,7 @@
 import { vValidator } from '@hono/valibot-validator';
 import { accessJwtMiddleware, roleMiddleware } from '@/middleware';
 import { createRouter, getUserId, getUserRole, IdParam, PaginationQuery } from '@/utils';
-import { CreateTestResultBody } from './schemas';
+import { CreateTestResultBody } from './schemas/create-test-result.schema';
 import {
   createTestResult,
   deleteSafeTestResult,

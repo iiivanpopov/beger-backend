@@ -1,5 +1,5 @@
 import type { Context, Next } from 'hono';
-import type { UserRole } from '@/database';
+import type { UserRole } from '@/database/tables';
 import { ApiError } from '@/exceptions';
 import { getUserRole } from '@/utils';
 

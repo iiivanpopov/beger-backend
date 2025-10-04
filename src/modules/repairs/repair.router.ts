@@ -8,7 +8,7 @@ import {
   getRepairs,
   getUserRepairs,
 } from './repair.service';
-import { CreateRepairBody } from './schemas';
+import { CreateRepairBody } from './schemas/create-repair.schema';
 
 export const repairsRouter = createRouter();
 
