@@ -4,6 +4,7 @@ import { EnvSchema } from './env.schema';
 const env = v.parse(EnvSchema, process.env);
 
 export const config = {
+  nodeEnv: env.NODE_ENV,
   isProduction: env.NODE_ENV === 'production',
   isDevelopment: env.NODE_ENV !== 'production',
 

@@ -1,4 +1,4 @@
-export const repairsDoc = {
+export const repairsDocs = {
   components: {
     schemas: {
       CreateRepairBody: {

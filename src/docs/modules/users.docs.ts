@@ -1,50 +1,52 @@
-export const testResultsDoc = {
+export const usersDocs = {
   components: {
     schemas: {
-      CreateTestResultBody: {
+      UpdateUserBody: {
         type: 'object',
         properties: {
-          pcbName: { type: 'string', minLength: 1, maxLength: 255 },
-          passedFirstTry: { type: 'integer', minimum: 0 },
-          failed: { type: 'integer', minimum: 0 },
-          total: { type: 'integer', minimum: 0 },
-          date: { type: 'string', format: 'date-time' },
+          userName: { type: 'string', minLength: 3 },
+          fullName: { type: 'string', minLength: 8 },
         },
-        required: ['pcbName', 'passedFirstTry', 'failed', 'total', 'date'],
+        required: ['userName', 'fullName'],
       },
     },
   },
   paths: {
-    '/records/test-results/me': {
+    '/users/me': {
       get: {
-        summary: 'List my test results (last 24h, max 10)',
-        tags: ['Test Results'],
+        summary: 'Get current user',
+        tags: ['Users'],
         security: [{ cookieAuth: [] }],
         responses: {
           '200': {
-            description: 'Test results',
+            description: 'Current user',
             content: {
               'application/json': {
                 schema: {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: {
-                      type: 'array',
-                      items: { $ref: '#/components/schemas/TestResult' },
-                    },
+                    data: { $ref: '#/components/schemas/User' },
                   },
                 },
+              },
+            },
+          },
+          '401': {
+            description: 'Unauthorized',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
               },
             },
           },
         },
       },
     },
-    '/records/test-results': {
+    '/users': {
       get: {
-        summary: 'List test results (admin)',
-        tags: ['Test Results'],
+        summary: 'List users (admin)',
+        tags: ['Users'],
         security: [{ cookieAuth: [] }],
         parameters: [
           { $ref: '#/components/parameters/PaginationOffset' },
@@ -52,7 +54,7 @@ export const testResultsDoc = {
         ],
         responses: {
           '200': {
-            description: 'Test results',
+            description: 'Users list',
             content: {
               'application/json': {
                 schema: {
@@ -61,7 +63,7 @@ export const testResultsDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/TestResult' },
+                      items: { $ref: '#/components/schemas/User' },
                     },
                   },
                 },
@@ -78,40 +80,64 @@ export const testResultsDoc = {
           },
         },
       },
-      post: {
-        summary: 'Create test result',
-        tags: ['Test Results'],
+    },
+    '/users/{id}': {
+      patch: {
+        summary: 'Update user (admin)',
+        tags: ['Users'],
         security: [{ cookieAuth: [] }],
+        parameters: [
+          {
+            in: 'path',
+            name: 'id',
+            required: true,
+            schema: { type: 'integer' },
+          },
+        ],
         requestBody: {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CreateTestResultBody' },
+              schema: { $ref: '#/components/schemas/UpdateUserBody' },
             },
           },
         },
         responses: {
-          '201': {
-            description: 'Created',
+          '200': {
+            description: 'Updated user',
             content: {
               'application/json': {
                 schema: {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/TestResult' },
+                    data: { $ref: '#/components/schemas/User' },
                   },
                 },
               },
             },
           },
+          '403': {
+            description: 'Forbidden',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+          '404': {
+            description: 'Not Found',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
         },
       },
-    },
-    '/records/test-results/{id}': {
       delete: {
-        summary: 'Delete test result (self last 24h or admin)',
-        tags: ['Test Results'],
+        summary: 'Delete user (admin)',
+        tags: ['Users'],
         security: [{ cookieAuth: [] }],
         parameters: [
           {
@@ -127,6 +153,14 @@ export const testResultsDoc = {
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/SuccessResponse' },
+              },
+            },
+          },
+          '403': {
+            description: 'Forbidden',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
               },
             },
           },

@@ -1,13 +1,18 @@
-import { authDoc } from '@/modules/auth/auth.doc';
-import { optionsDoc } from '@/modules/options/options.doc';
-import { repairsDoc } from '@/modules/repairs/repair.doc';
-import { testResultsDoc } from '@/modules/test-results/test-result.doc';
-import { usersDoc } from '@/modules/users/users.doc';
-import { baseDoc } from './base.doc';
+import { baseDocs } from './base.docs';
+import { authDocs } from './modules/auth.docs';
+import { optionsDocs } from './modules/options.docs';
+import { repairsDocs } from './modules/repair.docs';
+import { testResultsDocs } from './modules/test-result.docs';
+import { usersDocs } from './modules/users.docs';
 
 const composeDocs = (...docs: any[]) => {
-  const mergedPaths = docs.reduce((acc, doc) => ({ ...acc, ...doc?.paths }), {});
-  const mergedSchemas = docs.reduce((acc, doc) => ({ ...acc, ...doc?.components?.schemas }), {});
+  const paths: Record<string, any> = {};
+  const schemas: Record<string, any> = {};
+
+  for (const d of docs) {
+    if (d?.paths) Object.assign(paths, d.paths);
+    if (d?.components?.schemas) Object.assign(schemas, d.components.schemas);
+  }
 
   return {
     openapi: '3.0.0',
@@ -17,18 +22,16 @@ const composeDocs = (...docs: any[]) => {
       description: 'OpenAPI documentation for Beger Backend API',
     },
     servers: [{ url: '/api' }],
-    paths: mergedPaths,
-    components: {
-      schemas: mergedSchemas,
-    },
+    paths,
+    components: { schemas },
   };
 };
 
 export const openApiDocs = composeDocs(
-  baseDoc,
-  authDoc,
-  usersDoc,
-  repairsDoc,
-  testResultsDoc,
-  optionsDoc
+  baseDocs,
+  authDocs,
+  usersDocs,
+  repairsDocs,
+  testResultsDocs,
+  optionsDocs
 );

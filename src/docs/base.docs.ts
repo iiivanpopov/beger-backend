@@ -1,4 +1,4 @@
-export const baseDoc = {
+export const baseDocs = {
   components: {
     securitySchemes: {
       cookieAuth: { type: 'apiKey', in: 'cookie', name: 'accessToken' },
@@ -43,7 +43,6 @@ export const baseDoc = {
           role: { type: 'string', enum: ['user', 'admin'] },
           createdAt: { type: 'string', format: 'date-time' },
         },
-        required: ['id', 'fullName', 'userName', 'role'],
       },
       TokenPair: {
         type: 'object',
@@ -51,7 +50,6 @@ export const baseDoc = {
           accessToken: { type: 'string' },
           refreshToken: { type: 'string' },
         },
-        required: ['accessToken', 'refreshToken'],
       },
       Repair: {
         type: 'object',

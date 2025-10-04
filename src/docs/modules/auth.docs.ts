@@ -1,4 +1,4 @@
-export const authDoc = {
+export const authDocs = {
   components: {
     schemas: {
       LoginBody: {

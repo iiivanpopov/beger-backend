@@ -1,4 +1,4 @@
-export const optionsDoc = {
+export const optionsDocs = {
   components: {
     schemas: {
       OptionsResponse: {

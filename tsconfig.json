@@ -20,22 +20,7 @@
     "types": ["bun"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/database/*": ["src/database/*"],
-      "@/app/*": ["src/app/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@/config/*": ["src/config/*"],
-      "@/modules/*": ["src/modules/*"],
-      "@/exceptions/*": ["src/exceptions/*"],
-      "@/middleware/*": ["src/middleware/*"],
-
-      "@/database": ["src/database/index.ts"],
-      "@/app": ["src/app/index.ts"],
-      "@/utils": ["src/utils/index.ts"],
-      "@/config": ["src/config/index.ts"],
-      "@/modules": ["src/modules/index.ts"],
-      "@/exceptions": ["src/exceptions/index.ts"],
-      "@/middleware": ["src/middleware/index.ts"]
+      "@/*": ["src/*"]
     }
   }
 }

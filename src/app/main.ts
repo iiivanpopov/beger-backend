@@ -11,7 +11,7 @@ export const setup = async () => {
 
   app.onError(errorMiddleware);
 
-  if (config.isDevelopment) {
+  if (process.env.NODE_ENV === 'development') {
     const [{ openApiDocs }, { swaggerUI }] = await Promise.all([
       import('@/docs'),
       import('@hono/swagger-ui'),

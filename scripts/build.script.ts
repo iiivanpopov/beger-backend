@@ -1,21 +1,13 @@
 import { builtinModules } from 'node:module';
+import { config } from '@/config';
 import { log } from '@/utils';
-
-const isDevelopment = process.env.NODE_ENV === 'development';
+import packageJson from '../package.json';
 
 const external = [
-  'hono',
-  'drizzle-orm',
-  'memcached',
-  '@hono/valibot-validator',
-  '@hono/swagger-ui',
-  '@/docs',
-  'valibot',
-  'postgres',
-  'drizzle-kit',
-  'pino',
-  'pino-pretty',
+  ...Object.keys(packageJson.dependencies),
+  ...Object.keys(packageJson.devDependencies),
   ...builtinModules,
+  '@/docs',
 ];
 
 const build = async () => {
@@ -24,12 +16,15 @@ const build = async () => {
     outdir: './dist',
     target: 'bun',
     format: 'esm',
-    sourcemap: isDevelopment ? 'external' : 'none',
-    minify: !isDevelopment,
+    sourcemap: config.isDevelopment ? 'external' : 'none',
+    minify: config.isProduction,
     naming: {
       entry: '[name].mjs',
     },
     external,
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(config.nodeEnv),
+    },
   });
 
   for (const output of result.outputs) {

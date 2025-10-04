@@ -1,60 +1,28 @@
-export const usersDoc = {
+export const testResultsDocs = {
   components: {
     schemas: {
-      UpdateUserBody: {
+      CreateTestResultBody: {
         type: 'object',
         properties: {
-          userName: { type: 'string', minLength: 3 },
-          fullName: { type: 'string', minLength: 8 },
+          pcbName: { type: 'string', minLength: 1, maxLength: 255 },
+          passedFirstTry: { type: 'integer', minimum: 0 },
+          failed: { type: 'integer', minimum: 0 },
+          total: { type: 'integer', minimum: 0 },
+          date: { type: 'string', format: 'date-time' },
         },
-        required: ['userName', 'fullName'],
+        required: ['pcbName', 'passedFirstTry', 'failed', 'total', 'date'],
       },
     },
   },
   paths: {
-    '/users/me': {
+    '/records/test-results/me': {
       get: {
-        summary: 'Get current user',
-        tags: ['Users'],
+        summary: 'List my test results (last 24h, max 10)',
+        tags: ['Test Results'],
         security: [{ cookieAuth: [] }],
         responses: {
           '200': {
-            description: 'Current user',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/User' },
-                  },
-                },
-              },
-            },
-          },
-          '401': {
-            description: 'Unauthorized',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' },
-              },
-            },
-          },
-        },
-      },
-    },
-    '/users': {
-      get: {
-        summary: 'List users (admin)',
-        tags: ['Users'],
-        security: [{ cookieAuth: [] }],
-        parameters: [
-          { $ref: '#/components/parameters/PaginationOffset' },
-          { $ref: '#/components/parameters/PaginationLimit' },
-        ],
-        responses: {
-          '200': {
-            description: 'Users list',
+            description: 'Test results',
             content: {
               'application/json': {
                 schema: {
@@ -63,7 +31,37 @@ export const usersDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/User' },
+                      items: { $ref: '#/components/schemas/TestResult' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/records/test-results': {
+      get: {
+        summary: 'List test results (admin)',
+        tags: ['Test Results'],
+        security: [{ cookieAuth: [] }],
+        parameters: [
+          { $ref: '#/components/parameters/PaginationOffset' },
+          { $ref: '#/components/parameters/PaginationLimit' },
+        ],
+        responses: {
+          '200': {
+            description: 'Test results',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean' },
+                    data: {
+                      type: 'array',
+                      items: { $ref: '#/components/schemas/TestResult' },
                     },
                   },
                 },
@@ -80,64 +78,40 @@ export const usersDoc = {
           },
         },
       },
-    },
-    '/users/{id}': {
-      patch: {
-        summary: 'Update user (admin)',
-        tags: ['Users'],
+      post: {
+        summary: 'Create test result',
+        tags: ['Test Results'],
         security: [{ cookieAuth: [] }],
-        parameters: [
-          {
-            in: 'path',
-            name: 'id',
-            required: true,
-            schema: { type: 'integer' },
-          },
-        ],
         requestBody: {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/UpdateUserBody' },
+              schema: { $ref: '#/components/schemas/CreateTestResultBody' },
             },
           },
         },
         responses: {
-          '200': {
-            description: 'Updated user',
+          '201': {
+            description: 'Created',
             content: {
               'application/json': {
                 schema: {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/User' },
+                    data: { $ref: '#/components/schemas/TestResult' },
                   },
                 },
               },
             },
           },
-          '403': {
-            description: 'Forbidden',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' },
-              },
-            },
-          },
-          '404': {
-            description: 'Not Found',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' },
-              },
-            },
-          },
         },
       },
+    },
+    '/records/test-results/{id}': {
       delete: {
-        summary: 'Delete user (admin)',
-        tags: ['Users'],
+        summary: 'Delete test result (self last 24h or admin)',
+        tags: ['Test Results'],
         security: [{ cookieAuth: [] }],
         parameters: [
           {
@@ -153,14 +127,6 @@ export const usersDoc = {
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/SuccessResponse' },
-              },
-            },
-          },
-          '403': {
-            description: 'Forbidden',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' },
               },
             },
           },

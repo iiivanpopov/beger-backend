@@ -1,9 +1,8 @@
 import pino from 'pino';
-import { config } from '@/config';
 
 export const log = pino({
   level: 'info',
-  ...(config.isProduction
+  ...(process.env.NODE_ENV === 'production'
     ? {}
     : {
         transport: {
