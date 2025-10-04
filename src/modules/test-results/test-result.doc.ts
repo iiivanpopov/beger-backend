@@ -8,11 +8,11 @@ export const testResultsDoc = {
           passedFirstTry: { type: 'integer', minimum: 0 },
           failed: { type: 'integer', minimum: 0 },
           total: { type: 'integer', minimum: 0 },
-          date: { type: 'string', format: 'date-time' }
+          date: { type: 'string', format: 'date-time' },
         },
-        required: ['pcbName', 'passedFirstTry', 'failed', 'total', 'date']
-      }
-    }
+        required: ['pcbName', 'passedFirstTry', 'failed', 'total', 'date'],
+      },
+    },
   },
   paths: {
     '/records/test-results/me': {
@@ -31,15 +31,15 @@ export const testResultsDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/TestResult' }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      items: { $ref: '#/components/schemas/TestResult' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     '/records/test-results': {
       get: {
@@ -48,7 +48,7 @@ export const testResultsDoc = {
         security: [{ cookieAuth: [] }],
         parameters: [
           { $ref: '#/components/parameters/PaginationOffset' },
-          { $ref: '#/components/parameters/PaginationLimit' }
+          { $ref: '#/components/parameters/PaginationLimit' },
         ],
         responses: {
           '200': {
@@ -61,22 +61,22 @@ export const testResultsDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/TestResult' }
-                    }
-                  }
-                }
-              }
-            }
+                      items: { $ref: '#/components/schemas/TestResult' },
+                    },
+                  },
+                },
+              },
+            },
           },
           '403': {
             description: 'Forbidden',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
       },
       post: {
         summary: 'Create test result',
@@ -86,9 +86,9 @@ export const testResultsDoc = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CreateTestResultBody' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CreateTestResultBody' },
+            },
+          },
         },
         responses: {
           '201': {
@@ -99,14 +99,14 @@ export const testResultsDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/TestResult' }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                    data: { $ref: '#/components/schemas/TestResult' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     '/records/test-results/{id}': {
       delete: {
@@ -118,28 +118,28 @@ export const testResultsDoc = {
             in: 'path',
             name: 'id',
             required: true,
-            schema: { type: 'integer' }
-          }
+            schema: { type: 'integer' },
+          },
         ],
         responses: {
           '200': {
             description: 'Deleted',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/SuccessResponse' }
-              }
-            }
+                schema: { $ref: '#/components/schemas/SuccessResponse' },
+              },
+            },
           },
           '404': {
             description: 'Not Found',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};

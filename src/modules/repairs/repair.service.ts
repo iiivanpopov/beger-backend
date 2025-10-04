@@ -1,6 +1,7 @@
-import { and, desc, eq, gte, sql } from 'drizzle-orm'
-import { db, type InsertRepair, repairsTable } from '@/database'
-import { ApiError } from '@/exceptions'
+import { and, desc, eq, gte, sql } from 'drizzle-orm';
+import type { InsertRepair } from '@/database';
+import { db, repairsTable } from '@/database';
+import { ApiError } from '@/exceptions';
 
 export const getUserRepairs = async (userId: number) => {
   const repairs = await db
@@ -13,18 +14,18 @@ export const getUserRepairs = async (userId: number) => {
       )
     )
     .limit(10)
-    .orderBy(desc(repairsTable.createdAt))
+    .orderBy(desc(repairsTable.createdAt));
 
-  return repairs
-}
+  return repairs;
+};
 
 export const getRepairs = async ({ offset = 0, limit = 10 }) =>
-  db
+  await db
     .select()
     .from(repairsTable)
     .limit(limit)
     .offset(offset)
-    .orderBy(desc(repairsTable.createdAt))
+    .orderBy(desc(repairsTable.createdAt));
 
 export const createRepair = async (
   userId: number,
@@ -37,18 +38,15 @@ export const createRepair = async (
       defect: payload.defect,
       pcbName: payload.pcbName,
       note: payload.note,
-      date: payload.date
+      date: payload.date,
     })
-    .returning()
-  if (!repair) throw ApiError.InternalServerError()
+    .returning();
+  if (!repair) throw new ApiError.InternalServerError();
 
-  return repair
-}
+  return repair;
+};
 
-export const deleteSafeRepair = async (
-  userId: number,
-  testResultId: number
-) => {
+export const deleteSafeRepair = async (userId: number, testResultId: number) => {
   const [testResult] = await db
     .select()
     .from(repairsTable)
@@ -58,8 +56,8 @@ export const deleteSafeRepair = async (
         eq(repairsTable.userId, userId),
         gte(repairsTable.createdAt, sql`NOW() - interval '1 day'`)
       )
-    )
-  if (!testResult) throw ApiError.NotFound()
+    );
+  if (!testResult) throw ApiError.NotFound();
 
   await db
     .delete(repairsTable)
@@ -69,8 +67,8 @@ export const deleteSafeRepair = async (
         eq(repairsTable.userId, userId),
         gte(repairsTable.createdAt, sql`NOW() - interval '1 day'`)
       )
-    )
-}
+    );
+};
 
 export const deleteRepair = async (repairId: number) =>
-  db.delete(repairsTable).where(eq(repairsTable.id, repairId))
+  await db.delete(repairsTable).where(eq(repairsTable.id, repairId));

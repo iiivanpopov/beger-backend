@@ -1,5 +1,5 @@
-import * as v from 'valibot'
-import { config } from '@/config'
+import * as v from 'valibot';
+import { config } from '@/config';
 
 export const CreateRepairBody = v.object({
   pcbName: v.pipe(
@@ -18,19 +18,13 @@ export const CreateRepairBody = v.object({
     )
   ),
   note: v.optional(
-    v.nullable(
-      v.pipe(
-        v.string('Field must be a string'),
-        v.maxLength(255, 'Max note length: 255')
-      )
-    ),
-    null
+    v.nullable(v.pipe(v.string('Field must be a string'), v.maxLength(255, 'Max note length: 255')))
   ),
   date: v.pipe(
     v.string('Field must be a string'),
     v.transform((input: string) => new Date(input)),
     v.date('Field must be a valid date')
-  )
-})
+  ),
+});
 
-export type CreateRepairData = v.InferOutput<typeof CreateRepairBody>
+export type CreateRepairData = v.InferOutput<typeof CreateRepairBody>;

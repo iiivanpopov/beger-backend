@@ -2,7 +2,7 @@ export const baseDoc = {
   components: {
     securitySchemes: {
       cookieAuth: { type: 'apiKey', in: 'cookie', name: 'accessToken' },
-      refreshCookieAuth: { type: 'apiKey', in: 'cookie', name: 'refreshToken' }
+      refreshCookieAuth: { type: 'apiKey', in: 'cookie', name: 'refreshToken' },
     },
     parameters: {
       PaginationOffset: {
@@ -10,29 +10,29 @@ export const baseDoc = {
         name: 'offset',
         required: false,
         schema: { type: 'integer', minimum: 0, default: 0 },
-        description: 'Pagination offset'
+        description: 'Pagination offset',
       },
       PaginationLimit: {
         in: 'query',
         name: 'limit',
         required: false,
         schema: { type: 'integer', minimum: 1, default: 10 },
-        description: 'Pagination limit'
-      }
+        description: 'Pagination limit',
+      },
     },
     schemas: {
       SuccessResponse: {
         type: 'object',
         properties: {
-          success: { type: 'boolean', example: true }
-        }
+          success: { type: 'boolean', example: true },
+        },
       },
       ErrorResponse: {
         type: 'object',
         properties: {
           success: { type: 'boolean', example: false },
-          message: { type: 'string' }
-        }
+          message: { type: 'string' },
+        },
       },
       User: {
         type: 'object',
@@ -41,17 +41,17 @@ export const baseDoc = {
           fullName: { type: 'string' },
           userName: { type: 'string' },
           role: { type: 'string', enum: ['user', 'admin'] },
-          createdAt: { type: 'string', format: 'date-time' }
+          createdAt: { type: 'string', format: 'date-time' },
         },
-        required: ['id', 'fullName', 'userName', 'role']
+        required: ['id', 'fullName', 'userName', 'role'],
       },
       TokenPair: {
         type: 'object',
         properties: {
           accessToken: { type: 'string' },
-          refreshToken: { type: 'string' }
+          refreshToken: { type: 'string' },
         },
-        required: ['accessToken', 'refreshToken']
+        required: ['accessToken', 'refreshToken'],
       },
       Repair: {
         type: 'object',
@@ -62,8 +62,8 @@ export const baseDoc = {
           defect: { type: 'string' },
           note: { type: ['string', 'null'] },
           date: { type: 'string', format: 'date-time' },
-          createdAt: { type: 'string', format: 'date-time' }
-        }
+          createdAt: { type: 'string', format: 'date-time' },
+        },
       },
       TestResult: {
         type: 'object',
@@ -75,18 +75,18 @@ export const baseDoc = {
           failed: { type: 'integer', minimum: 0 },
           total: { type: 'integer', minimum: 0 },
           date: { type: 'string', format: 'date-time' },
-          createdAt: { type: 'string', format: 'date-time' }
-        }
-      }
-    }
+          createdAt: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
   },
   paths: {
     '/health': {
       get: {
         summary: 'Health check',
         tags: ['System'],
-        responses: { '200': { description: 'OK' } }
-      }
-    }
-  }
-} as const
+        responses: { '200': { description: 'OK' } },
+      },
+    },
+  },
+} as const;

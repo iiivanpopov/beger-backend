@@ -1,62 +1,56 @@
-import { vValidator } from '@hono/valibot-validator'
-import { accessJwtMiddleware, roleMiddleware } from '@/middleware'
-import {
-  createRouter,
-  getUserId,
-  getUserRole,
-  IdParam,
-  PaginationQuery
-} from '@/utils'
+import { vValidator } from '@hono/valibot-validator';
+import { accessJwtMiddleware, roleMiddleware } from '@/middleware';
+import { createRouter, getUserId, getUserRole, IdParam, PaginationQuery } from '@/utils';
 import {
   createRepair,
   deleteRepair,
   deleteSafeRepair,
   getRepairs,
-  getUserRepairs
-} from './repair.service'
-import { CreateRepairBody } from './schemas'
+  getUserRepairs,
+} from './repair.service';
+import { CreateRepairBody } from './schemas';
 
-export const repairsRouter = createRouter()
+export const repairsRouter = createRouter();
 
-repairsRouter.use(accessJwtMiddleware)
+repairsRouter.use(accessJwtMiddleware);
 
-repairsRouter.get('/me', async c => {
-  const userId = getUserId(c)
+repairsRouter.get('/me', async (c) => {
+  const userId = getUserId(c);
 
-  const repairs = await getUserRepairs(userId)
+  const repairs = await getUserRepairs(userId);
 
-  return c.json({ data: repairs, success: true }, 200)
-})
+  return c.json({ data: repairs, success: true }, 200);
+});
 
 repairsRouter.get(
   '/',
   vValidator('query', PaginationQuery),
   roleMiddleware(['admin']),
-  async c => {
-    const queryParams = c.req.valid('query')
+  async (c) => {
+    const queryParams = c.req.valid('query');
 
-    const testResults = await getRepairs(queryParams)
+    const testResults = await getRepairs(queryParams);
 
-    return c.json({ data: testResults, success: true }, 200)
+    return c.json({ data: testResults, success: true }, 200);
   }
-)
+);
 
-repairsRouter.post('/', vValidator('json', CreateRepairBody), async c => {
-  const body = c.req.valid('json')
-  const userId = getUserId(c)
+repairsRouter.post('/', vValidator('json', CreateRepairBody), async (c) => {
+  const body = c.req.valid('json');
+  const userId = getUserId(c);
 
-  const repair = await createRepair(userId, body)
+  const repair = await createRepair(userId, body);
 
-  return c.json({ data: repair, success: true }, 201)
-})
+  return c.json({ data: repair, success: true }, 201);
+});
 
-repairsRouter.delete('/:id', vValidator('param', IdParam), async c => {
-  const userRole = getUserRole(c)
-  const userId = getUserId(c)
-  const repairId = c.req.valid('param').id
+repairsRouter.delete('/:id', vValidator('param', IdParam), async (c) => {
+  const userRole = getUserRole(c);
+  const userId = getUserId(c);
+  const repairId = c.req.valid('param').id;
 
-  if (userRole === 'user') await deleteSafeRepair(userId, repairId)
-  else if (userRole === 'admin') await deleteRepair(repairId)
+  if (userRole === 'user') await deleteSafeRepair(userId, repairId);
+  else if (userRole === 'admin') await deleteRepair(repairId);
 
-  return c.json({ success: true }, 200)
-})
+  return c.json({ success: true }, 200);
+});

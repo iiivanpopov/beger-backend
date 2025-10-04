@@ -7,11 +7,11 @@ export const repairsDoc = {
           pcbName: { type: 'string', minLength: 1, maxLength: 255 },
           defect: { type: 'string', minLength: 1 },
           note: { type: ['string', 'null'], maxLength: 255 },
-          date: { type: 'string', format: 'date-time' }
+          date: { type: 'string', format: 'date-time' },
         },
-        required: ['pcbName', 'defect', 'date']
-      }
-    }
+        required: ['pcbName', 'defect', 'date'],
+      },
+    },
   },
   paths: {
     '/records/repairs/me': {
@@ -30,15 +30,15 @@ export const repairsDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/Repair' }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      items: { $ref: '#/components/schemas/Repair' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     '/records/repairs': {
       get: {
@@ -47,7 +47,7 @@ export const repairsDoc = {
         security: [{ cookieAuth: [] }],
         parameters: [
           { $ref: '#/components/parameters/PaginationOffset' },
-          { $ref: '#/components/parameters/PaginationLimit' }
+          { $ref: '#/components/parameters/PaginationLimit' },
         ],
         responses: {
           '200': {
@@ -60,22 +60,22 @@ export const repairsDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/Repair' }
-                    }
-                  }
-                }
-              }
-            }
+                      items: { $ref: '#/components/schemas/Repair' },
+                    },
+                  },
+                },
+              },
+            },
           },
           '403': {
             description: 'Forbidden',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
       },
       post: {
         summary: 'Create repair',
@@ -85,9 +85,9 @@ export const repairsDoc = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CreateRepairBody' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CreateRepairBody' },
+            },
+          },
         },
         responses: {
           '201': {
@@ -98,14 +98,14 @@ export const repairsDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/Repair' }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                    data: { $ref: '#/components/schemas/Repair' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     '/records/repairs/{id}': {
       delete: {
@@ -117,28 +117,28 @@ export const repairsDoc = {
             in: 'path',
             name: 'id',
             required: true,
-            schema: { type: 'integer' }
-          }
+            schema: { type: 'integer' },
+          },
         ],
         responses: {
           '200': {
             description: 'Deleted',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/SuccessResponse' }
-              }
-            }
+                schema: { $ref: '#/components/schemas/SuccessResponse' },
+              },
+            },
           },
           '404': {
             description: 'Not Found',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};

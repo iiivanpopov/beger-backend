@@ -5,20 +5,20 @@ export const authDoc = {
         type: 'object',
         properties: {
           userName: { type: 'string', minLength: 3 },
-          password: { type: 'string', minLength: 6 }
+          password: { type: 'string', minLength: 6 },
         },
-        required: ['userName', 'password']
+        required: ['userName', 'password'],
       },
       RegisterBody: {
         type: 'object',
         properties: {
           userName: { type: 'string', minLength: 3 },
           password: { type: 'string', minLength: 6 },
-          fullName: { type: 'string', minLength: 8 }
+          fullName: { type: 'string', minLength: 8 },
         },
-        required: ['userName', 'password', 'fullName']
-      }
-    }
+        required: ['userName', 'password', 'fullName'],
+      },
+    },
   },
   paths: {
     '/auth/login': {
@@ -29,17 +29,17 @@ export const authDoc = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/LoginBody' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/LoginBody' },
+            },
+          },
         },
         responses: {
           '200': {
             description: 'Logged in',
             headers: {
               'Set-Cookie': {
-                description: 'Sets accessToken and refreshToken cookies'
-              }
+                description: 'Sets accessToken and refreshToken cookies',
+              },
             },
             content: {
               'application/json': {
@@ -47,22 +47,22 @@ export const authDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/TokenPair' }
-                  }
-                }
-              }
-            }
+                    data: { $ref: '#/components/schemas/TokenPair' },
+                  },
+                },
+              },
+            },
           },
           '401': {
             description: 'Unauthorized',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
     },
     '/auth/register': {
       post: {
@@ -74,9 +74,9 @@ export const authDoc = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/RegisterBody' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/RegisterBody' },
+            },
+          },
         },
         responses: {
           '201': {
@@ -87,15 +87,15 @@ export const authDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/User' }
-                  }
-                }
-              }
-            }
+                    data: { $ref: '#/components/schemas/User' },
+                  },
+                },
+              },
+            },
           },
-          '403': { description: 'Forbidden' }
-        }
-      }
+          '403': { description: 'Forbidden' },
+        },
+      },
     },
     '/auth/logout': {
       post: {
@@ -107,12 +107,12 @@ export const authDoc = {
             description: 'Logged out',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/SuccessResponse' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/SuccessResponse' },
+              },
+            },
+          },
+        },
+      },
     },
     '/auth/refresh': {
       post: {
@@ -124,8 +124,8 @@ export const authDoc = {
             description: 'Tokens refreshed',
             headers: {
               'Set-Cookie': {
-                description: 'Sets new accessToken and refreshToken cookies'
-              }
+                description: 'Sets new accessToken and refreshToken cookies',
+              },
             },
             content: {
               'application/json': {
@@ -133,22 +133,22 @@ export const authDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/TokenPair' }
-                  }
-                }
-              }
-            }
+                    data: { $ref: '#/components/schemas/TokenPair' },
+                  },
+                },
+              },
+            },
           },
           '401': {
             description: 'Unauthorized',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};

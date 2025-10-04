@@ -1,5 +1,5 @@
-import pino from 'pino'
-import { config } from '@/config'
+import pino from 'pino';
+import { config } from '@/config';
 
 export const log = pino({
   level: 'info',
@@ -11,8 +11,8 @@ export const log = pino({
           options: {
             colorize: true,
             translateTime: 'yyyy-mm-dd HH:MM:ss.l',
-            ignore: 'pid,hostname'
-          }
-        }
-      })
-})
+            ignore: 'pid,hostname',
+          },
+        },
+      }),
+});

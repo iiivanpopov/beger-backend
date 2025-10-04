@@ -1,1 +1,1 @@
-export * from './test-result.router'
+export * from './test-result.router';

@@ -1,5 +1,5 @@
-import * as v from 'valibot'
-import { config } from '@/config'
+import * as v from 'valibot';
+import { config } from '@/config';
 
 export const LoginBody = v.object({
   userName: v.pipe(
@@ -15,7 +15,7 @@ export const LoginBody = v.object({
       config.validation.MIN_PASSWORD_LEN,
       `Minimal password length: ${config.validation.MIN_PASSWORD_LEN}`
     )
-  )
-})
+  ),
+});
 
-export type LoginData = v.InferOutput<typeof LoginBody>
+export type LoginData = v.InferOutput<typeof LoginBody>;

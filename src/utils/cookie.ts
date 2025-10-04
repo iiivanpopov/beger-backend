@@ -1,6 +1,6 @@
-import type { Context } from 'hono'
-import { setCookie } from 'hono/cookie'
-import { config } from '@/config'
+import type { Context } from 'hono';
+import { setCookie } from 'hono/cookie';
+import { config } from '@/config';
 
 export const setCookieTokens = (
   c: Context,
@@ -10,13 +10,13 @@ export const setCookieTokens = (
     path: '/',
     secure: true,
     httpOnly: true,
-    maxAge: config.jwt.accessExpiresIn
-  })
+    maxAge: config.jwt.accessExpiresIn,
+  });
 
   setCookie(c, config.cookies.refreshTokenName, tokens.refreshToken, {
     path: '/',
     secure: true,
     httpOnly: true,
-    maxAge: config.jwt.refreshExpiresIn
-  })
-}
+    maxAge: config.jwt.refreshExpiresIn,
+  });
+};

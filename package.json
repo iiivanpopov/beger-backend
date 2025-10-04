@@ -32,15 +32,15 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "npm run clean && cpy certs dist",
-    "build:dev": "npm run prebuild && cross-env NODE_ENV=development bun scripts/build.script.ts",
-    "build:prod": "npm run prebuild && cross-env NODE_ENV=production bun scripts/build.script.ts",
+    "prebuild": "bun run clean && cpy certs dist",
+    "build:dev": "bun run prebuild && cross-env NODE_ENV=development bun scripts/build.script.ts",
+    "build:prod": "bun run prebuild && cross-env NODE_ENV=production bun scripts/build.script.ts",
     "start:dev": "cross-env NODE_ENV=development bun --watch src/index.ts",
     "start:dist:dev": "cross-env NODE_ENV=development bun dist/index.mjs",
     "start:dist:prod": "cross-env NODE_ENV=production bun dist/index.mjs",
-    "test": "bun test",
     "lint": "oxlint . --fix",
-    "format": "biome format --write .",
+    "format": "biome format . --fix",
+    "check": "biome check . --fix",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
@@ -49,6 +49,6 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*": ["biome format --write", "oxlint --fix"]
+    "*": ["biome check --fix", "oxlint --fix"]
   }
 }

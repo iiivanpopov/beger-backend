@@ -1,95 +1,92 @@
-import { eq } from 'drizzle-orm'
-import { db, tokensTable, usersTable } from '@/database'
-import { ApiError } from '@/exceptions'
-import { signJWTs } from '@/utils'
-import type { LoginData, RegisterData } from './schemas'
+import { eq } from 'drizzle-orm';
+import { db, tokensTable, usersTable } from '@/database';
+import { ApiError } from '@/exceptions';
+import { signJWTs } from '@/utils';
+import type { LoginData, RegisterData } from './schemas';
 
 export const register = async (userPayload: RegisterData) => {
   const [userExists] = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.userName, userPayload.userName))
-  if (userExists) throw ApiError.BadRequest('User already exists')
+    .where(eq(usersTable.userName, userPayload.userName));
+  if (userExists) throw ApiError.BadRequest('User already exists');
 
-  const passwordHash = await Bun.password.hash(userPayload.password)
+  const passwordHash = await Bun.password.hash(userPayload.password);
   const [user] = await db
     .insert(usersTable)
     .values({
       passwordHash,
       fullName: userPayload.fullName,
       userName: userPayload.userName,
-      role: 'user'
+      role: 'user',
     })
-    .returning()
-  if (!user) throw ApiError.InternalServerError()
+    .returning();
+  if (!user) throw new ApiError.InternalServerError();
 
   const signedTokens = await signJWTs({
     sub: String(user.id),
-    role: user.role
-  })
+    role: user.role,
+  });
   await db.insert(tokensTable).values({
     token: signedTokens.refreshToken,
-    userId: user.id
-  })
+    userId: user.id,
+  });
 
-  return user
-}
+  return user;
+};
 
 export const login = async (userPayload: LoginData) => {
   const [user] = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.userName, userPayload.userName))
-  if (!user) throw ApiError.NotFound()
+    .where(eq(usersTable.userName, userPayload.userName));
+  if (!user) throw ApiError.NotFound();
 
-  const isVerified = await Bun.password.verify(
-    userPayload.password,
-    user.passwordHash
-  )
-  if (!isVerified) throw ApiError.Unauthorized()
+  const isVerified = await Bun.password.verify(userPayload.password, user.passwordHash);
+  if (!isVerified) throw ApiError.Unauthorized();
 
   const signedTokens = await signJWTs({
     sub: String(user.id),
-    role: user.role
-  })
+    role: user.role,
+  });
   await db
     .insert(tokensTable)
     .values({
       token: signedTokens.refreshToken,
-      userId: user.id
+      userId: user.id,
     })
     .onConflictDoUpdate({
       set: { token: signedTokens.refreshToken },
-      target: tokensTable.userId
-    })
+      target: tokensTable.userId,
+    });
 
-  return signedTokens
-}
+  return signedTokens;
+};
 
 export const logout = async (userId: number) => {
-  await db.delete(tokensTable).where(eq(tokensTable.userId, userId))
-}
+  await db.delete(tokensTable).where(eq(tokensTable.userId, userId));
+};
 
 export const refresh = async (userId: number, requestedToken: string) => {
   const [user] = await db
     .select({
       role: usersTable.role,
-      token: tokensTable.token
+      token: tokensTable.token,
     })
     .from(tokensTable)
     .innerJoin(usersTable, eq(usersTable.id, tokensTable.userId))
-    .where(eq(tokensTable.userId, userId))
-  if (!user || user.token !== requestedToken) throw ApiError.Unauthorized()
+    .where(eq(tokensTable.userId, userId));
+  if (!user || user.token !== requestedToken) throw ApiError.Unauthorized();
 
   const signedTokens = await signJWTs({
     sub: String(userId),
-    role: user.role
-  })
+    role: user.role,
+  });
 
   await db
     .update(tokensTable)
     .set({ token: signedTokens.refreshToken })
-    .where(eq(tokensTable.userId, userId))
+    .where(eq(tokensTable.userId, userId));
 
-  return signedTokens
-}
+  return signedTokens;
+};

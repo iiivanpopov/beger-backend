@@ -7,18 +7,18 @@ export const optionsDoc = {
           pcb: {
             type: 'array',
             items: {
-              type: 'string'
-            }
+              type: 'string',
+            },
           },
           defect: {
             type: 'array',
             items: {
-              type: 'string'
-            }
-          }
-        }
-      }
-    }
+              type: 'string',
+            },
+          },
+        },
+      },
+    },
   },
   paths: {
     '/options': {
@@ -35,14 +35,14 @@ export const optionsDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/OptionsResponse' }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+                    data: { $ref: '#/components/schemas/OptionsResponse' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};

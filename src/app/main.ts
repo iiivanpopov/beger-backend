@@ -1,48 +1,48 @@
-import path from 'node:path'
-import { cors } from 'hono/cors'
-import { logger } from 'hono/logger'
-import { config } from '@/config'
-import { errorMiddleware } from '@/middleware'
-import { createRouter, log } from '@/utils'
-import { router } from './router'
+import path from 'node:path';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import { config } from '@/config';
+import { errorMiddleware } from '@/middleware';
+import { createRouter, log } from '@/utils';
+import { router } from './router';
 
 export const setup = async () => {
-  const app = createRouter()
+  const app = createRouter();
 
-  app.onError(errorMiddleware)
+  app.onError(errorMiddleware);
 
   if (config.isDevelopment) {
     const [{ openApiDocs }, { swaggerUI }] = await Promise.all([
       import('@/docs'),
-      import('@hono/swagger-ui')
-    ])
+      import('@hono/swagger-ui'),
+    ]);
 
-    app.get('/docs', c => c.json(openApiDocs))
-    app.get('/swagger', swaggerUI({ url: '/docs' }))
+    app.get('/docs', (c) => c.json(openApiDocs));
+    app.get('/swagger', swaggerUI({ url: '/docs' }));
   }
 
-  app.use(cors())
-  app.use(logger())
+  app.use(cors());
+  app.use(logger());
 
-  app.get('/health', c =>
+  app.get('/health', (c) =>
     c.json({
       status: 'ok',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
-  )
+  );
 
-  app.route('/api', router)
+  app.route('/api', router);
 
-  const baseUrl = config.isDevelopment ? '/' : import.meta.dirname
+  const baseUrl = config.isDevelopment ? '/' : import.meta.dirname;
   const server = Bun.serve({
     port: config.server.port,
     tls: {
       key: Bun.file(path.resolve(baseUrl, './certs/key.pem')),
-      cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem'))
+      cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem')),
     },
     fetch: app.fetch,
-    development: config.isProduction
-  })
+    development: config.isProduction,
+  });
 
-  log.info(`Listening ${server.url}`)
-}
+  log.info(`Listening ${server.url}`);
+};

@@ -1,9 +1,10 @@
-import { and, desc, eq, gte, sql } from 'drizzle-orm'
-import { db, type InsertTestResult, testResultsTable } from '@/database'
-import { ApiError } from '@/exceptions'
+import { and, desc, eq, gte, sql } from 'drizzle-orm';
+import type { InsertTestResult } from '@/database';
+import { db, testResultsTable } from '@/database';
+import { ApiError } from '@/exceptions';
 
 export const getUserTestResults = async (userId: number) =>
-  db
+  await db
     .select()
     .from(testResultsTable)
     .where(
@@ -13,15 +14,15 @@ export const getUserTestResults = async (userId: number) =>
       )
     )
     .limit(10)
-    .orderBy(desc(testResultsTable.createdAt))
+    .orderBy(desc(testResultsTable.createdAt));
 
 export const getTestResults = async ({ offset = 0, limit = 10 }) =>
-  db
+  await db
     .select()
     .from(testResultsTable)
     .limit(limit)
     .offset(offset)
-    .orderBy(desc(testResultsTable.createdAt))
+    .orderBy(desc(testResultsTable.createdAt));
 
 export const createTestResult = async (
   userId: number,
@@ -35,18 +36,15 @@ export const createTestResult = async (
       passedFirstTry: payload.failed,
       failed: payload.failed,
       total: payload.total,
-      date: payload.date
+      date: payload.date,
     })
-    .returning()
-  if (!testResult) throw ApiError.InternalServerError()
+    .returning();
+  if (!testResult) throw ApiError.InternalServerError();
 
-  return testResult
-}
+  return testResult;
+};
 
-export const deleteSafeTestResult = async (
-  userId: number,
-  testResultId: number
-) => {
+export const deleteSafeTestResult = async (userId: number, testResultId: number) => {
   const [testResult] = await db
     .select()
     .from(testResultsTable)
@@ -56,8 +54,9 @@ export const deleteSafeTestResult = async (
         eq(testResultsTable.userId, userId),
         gte(testResultsTable.createdAt, sql`NOW() - interval '1 day'`)
       )
-    )
-  if (!testResult) throw ApiError.NotFound()
+    );
+  // oxlint-disable-next-line new-cap
+  if (!testResult) throw ApiError.NotFound();
 
   await db
     .delete(testResultsTable)
@@ -67,8 +66,8 @@ export const deleteSafeTestResult = async (
         eq(testResultsTable.userId, userId),
         gte(testResultsTable.createdAt, sql`NOW() - interval '1 day'`)
       )
-    )
-}
+    );
+};
 
 export const deleteTestResult = async (testResultId: number) =>
-  db.delete(testResultsTable).where(eq(testResultsTable.id, testResultId))
+  await db.delete(testResultsTable).where(eq(testResultsTable.id, testResultId));

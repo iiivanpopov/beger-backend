@@ -1,32 +1,43 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
   "files": {
-    "includes": [
-      "**/*.{js,ts,json}",
-      "!**/{dist,build,generated,node_modules}"
-    ],
-    "ignoreUnknown": true
+    "includes": ["**/*.{js,ts,tsx}", "!**/{dist,build,generated,node_modules,coverage,.next,.nuxt}"]
   },
   "formatter": {
     "enabled": true,
+    "formatWithErrors": true,
+    "attributePosition": "auto",
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 80,
+    "lineWidth": 100,
     "lineEnding": "lf",
-    "attributePosition": "multiline",
+    "bracketSameLine": false,
     "expand": "auto",
-    "bracketSpacing": true,
-    "bracketSameLine": false
+    "bracketSpacing": true
   },
   "javascript": {
     "formatter": {
-      "enabled": true,
-      "arrowParentheses": "asNeeded",
-      "jsxQuoteStyle": "single",
-      "quoteStyle": "single",
-      "quoteProperties": "preserve",
-      "semicolons": "asNeeded",
-      "trailingCommas": "none"
+      "arrowParentheses": "always",
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "semicolons": "always",
+      "trailingCommas": "es5",
+      "operatorLinebreak": "before",
+      "quoteStyle": "single"
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [":PACKAGE_WITH_PROTOCOL:", ":PACKAGE:", ":ALIAS:", ":PATH:", ":URL:"],
+            "identifierOrder": "natural"
+          }
+        }
+      }
     }
   },
   "linter": {

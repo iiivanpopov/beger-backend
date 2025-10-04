@@ -5,11 +5,11 @@ export const usersDoc = {
         type: 'object',
         properties: {
           userName: { type: 'string', minLength: 3 },
-          fullName: { type: 'string', minLength: 8 }
+          fullName: { type: 'string', minLength: 8 },
         },
-        required: ['userName', 'fullName']
-      }
-    }
+        required: ['userName', 'fullName'],
+      },
+    },
   },
   paths: {
     '/users/me': {
@@ -26,22 +26,22 @@ export const usersDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/User' }
-                  }
-                }
-              }
-            }
+                    data: { $ref: '#/components/schemas/User' },
+                  },
+                },
+              },
+            },
           },
           '401': {
             description: 'Unauthorized',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
     },
     '/users': {
       get: {
@@ -50,7 +50,7 @@ export const usersDoc = {
         security: [{ cookieAuth: [] }],
         parameters: [
           { $ref: '#/components/parameters/PaginationOffset' },
-          { $ref: '#/components/parameters/PaginationLimit' }
+          { $ref: '#/components/parameters/PaginationLimit' },
         ],
         responses: {
           '200': {
@@ -63,23 +63,23 @@ export const usersDoc = {
                     success: { type: 'boolean' },
                     data: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/User' }
-                    }
-                  }
-                }
-              }
-            }
+                      items: { $ref: '#/components/schemas/User' },
+                    },
+                  },
+                },
+              },
+            },
           },
           '403': {
             description: 'Forbidden',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
     },
     '/users/{id}': {
       patch: {
@@ -91,16 +91,16 @@ export const usersDoc = {
             in: 'path',
             name: 'id',
             required: true,
-            schema: { type: 'integer' }
-          }
+            schema: { type: 'integer' },
+          },
         ],
         requestBody: {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/UpdateUserBody' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/UpdateUserBody' },
+            },
+          },
         },
         responses: {
           '200': {
@@ -111,29 +111,29 @@ export const usersDoc = {
                   type: 'object',
                   properties: {
                     success: { type: 'boolean' },
-                    data: { $ref: '#/components/schemas/User' }
-                  }
-                }
-              }
-            }
+                    data: { $ref: '#/components/schemas/User' },
+                  },
+                },
+              },
+            },
           },
           '403': {
             description: 'Forbidden',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
           },
           '404': {
             description: 'Not Found',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
       },
       delete: {
         summary: 'Delete user (admin)',
@@ -144,36 +144,36 @@ export const usersDoc = {
             in: 'path',
             name: 'id',
             required: true,
-            schema: { type: 'integer' }
-          }
+            schema: { type: 'integer' },
+          },
         ],
         responses: {
           '200': {
             description: 'Deleted',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/SuccessResponse' }
-              }
-            }
+                schema: { $ref: '#/components/schemas/SuccessResponse' },
+              },
+            },
           },
           '403': {
             description: 'Forbidden',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
           },
           '404': {
             description: 'Not Found',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ErrorResponse' }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
