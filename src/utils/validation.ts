@@ -12,9 +12,5 @@ export const PaginationQuery = v.object({
 });
 
 export const IdParam = v.object({
-  id: v.pipe(
-    v.string('Field must be a string'),
-    // oxlint-disable-next-line prefer-native-coercion-functions
-    v.transform((input) => Number(input))
-  ),
+  id: v.pipe(v.string('Field must be a string'), v.transform(Number)),
 });

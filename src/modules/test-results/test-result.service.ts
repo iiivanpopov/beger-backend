@@ -55,7 +55,6 @@ export const deleteSafeTestResult = async (userId: number, testResultId: number)
         gte(testResultsTable.createdAt, sql`NOW() - interval '1 day'`)
       )
     );
-  // oxlint-disable-next-line new-cap
   if (!testResult) throw ApiError.NotFound();
 
   await db
