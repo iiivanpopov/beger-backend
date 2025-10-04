@@ -1,7 +1,6 @@
 import { vValidator } from '@hono/valibot-validator';
-import { ApiError } from '@/exceptions';
-import { accessJwtMiddleware } from '@/middleware';
-import { createRouter, getUserId, getUserRole, IdParam, PaginationQuery } from '@/utils';
+import { accessJwtMiddleware, roleMiddleware } from '@/middleware';
+import { createRouter, getUserId, IdParam, PaginationQuery } from '@/utils';
 import { UpdateUserBody } from './schemas/update-user.schema';
 import { deleteUser, getAllUsers, getUser, updateUser } from './users.service';
 
@@ -17,10 +16,8 @@ usersRouter.get('/me', async (c) => {
   return c.json({ data: user, success: true }, 200);
 });
 
-usersRouter.get('/', vValidator('query', PaginationQuery), async (c) => {
-  const userRole = getUserRole(c);
+usersRouter.get('/', vValidator('query', PaginationQuery), roleMiddleware('admin'), async (c) => {
   const queryParams = c.req.valid('query');
-  if (userRole !== 'admin') throw ApiError.Forbidden();
 
   const users = await getAllUsers(queryParams);
 
@@ -31,11 +28,10 @@ usersRouter.patch(
   '/:id',
   vValidator('param', IdParam),
   vValidator('json', UpdateUserBody),
+  roleMiddleware('admin'),
   async (c) => {
     const body = c.req.valid('json');
     const targetId = c.req.valid('param').id;
-    const userRole = getUserRole(c);
-    if (userRole !== 'admin') throw ApiError.Forbidden();
 
     const user = await updateUser(targetId, body);
 
@@ -43,10 +39,8 @@ usersRouter.patch(
   }
 );
 
-usersRouter.delete('/:id', vValidator('param', IdParam), async (c) => {
+usersRouter.delete('/:id', vValidator('param', IdParam), roleMiddleware('admin'), async (c) => {
   const targetId = c.req.valid('param').id;
-  const userRole = getUserRole(c);
-  if (userRole !== 'admin') throw ApiError.Forbidden();
 
   await deleteUser(targetId);
 

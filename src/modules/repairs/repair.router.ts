@@ -22,18 +22,13 @@ repairsRouter.get('/me', async (c) => {
   return c.json({ data: repairs, success: true }, 200);
 });
 
-repairsRouter.get(
-  '/',
-  vValidator('query', PaginationQuery),
-  roleMiddleware(['admin']),
-  async (c) => {
-    const queryParams = c.req.valid('query');
+repairsRouter.get('/', vValidator('query', PaginationQuery), roleMiddleware('admin'), async (c) => {
+  const queryParams = c.req.valid('query');
 
-    const testResults = await getRepairs(queryParams);
+  const testResults = await getRepairs(queryParams);
 
-    return c.json({ data: testResults, success: true }, 200);
-  }
-);
+  return c.json({ data: testResults, success: true }, 200);
+});
 
 repairsRouter.post('/', vValidator('json', CreateRepairBody), async (c) => {
   const body = c.req.valid('json');

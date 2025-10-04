@@ -25,7 +25,7 @@ testResultsRouter.get('/me', async (c) => {
 testResultsRouter.get(
   '/',
   vValidator('query', PaginationQuery),
-  roleMiddleware(['admin']),
+  roleMiddleware('admin'),
   async (c) => {
     const queryParams = c.req.valid('query');
 

@@ -3,9 +3,8 @@ import type { UserRole } from '@/database/tables';
 import { ApiError } from '@/exceptions';
 import { getUserRole } from '@/utils';
 
-export const roleMiddleware = (roles: UserRole[]) => async (c: Context, next: Next) => {
-  const userRole = getUserRole(c);
-  if (!roles.includes(userRole)) return c.json(ApiError.Forbidden().toJSON(), 403);
+export const roleMiddleware = (role: UserRole) => async (c: Context, next: Next) => {
+  if (getUserRole(c) !== role) return c.json(ApiError.Forbidden().toJSON(), 403);
 
   await next();
 };

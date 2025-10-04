@@ -23,7 +23,7 @@ authRouter.post(
   '/register',
   vValidator('json', RegisterBody),
   accessJwtMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware('admin'),
   async (c) => {
     const body = c.req.valid('json');
 

@@ -7,7 +7,6 @@ const external = [
   ...Object.keys(packageJson.dependencies),
   ...Object.keys(packageJson.devDependencies),
   ...builtinModules,
-  '@/docs',
 ];
 
 export const esbuildConfig: BuildOptions = {
@@ -18,7 +17,7 @@ export const esbuildConfig: BuildOptions = {
   bundle: true,
   outdir: './dist',
   platform: 'node',
-  target: 'node18',
+  target: 'es2024',
   format: 'esm',
   sourcemap: config.isDevelopment ? 'external' : false,
   minify: config.isProduction,
@@ -26,9 +25,6 @@ export const esbuildConfig: BuildOptions = {
   external,
   define: {
     'process.env.NODE_ENV': JSON.stringify(config.nodeEnv),
-    'process.env': '{}',
-    __dirname: 'undefined',
-    __filename: 'undefined',
   },
   loader: {
     '.ts': 'ts',
@@ -41,7 +37,6 @@ export const esbuildConfig: BuildOptions = {
     '.js': '.mjs',
   },
   treeShaking: true,
-  drop: config.isProduction ? ['console', 'debugger'] : [],
   alias: {
     '@': './src',
   },
@@ -53,11 +48,9 @@ export const esbuildConfig: BuildOptions = {
   mainFields: ['module', 'main'],
   conditions: ['node'],
   resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-  packages: 'external',
   keepNames: false,
   mangleProps: config.isProduction ? /^_/ : undefined,
   reserveProps: config.isProduction ? /^__/ : undefined,
-  pure: config.isProduction ? ['console.log', 'console.info', 'console.debug'] : [],
   globalName: undefined,
 };
 
