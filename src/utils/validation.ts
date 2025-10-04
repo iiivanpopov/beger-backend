@@ -1,16 +1,35 @@
-import * as v from 'valibot';
+import {
+  date,
+  maxLength,
+  minLength,
+  minValue,
+  object,
+  optional,
+  pipe,
+  string,
+  transform,
+} from 'valibot';
+import { config } from '@/config';
 
-export const PaginationQuery = v.object({
-  offset: v.optional(
-    v.pipe(v.string('Field must be a string'), v.transform(Number), v.minValue(0, 'Must be >= 0')),
-    '0'
-  ),
-  limit: v.optional(
-    v.pipe(v.string('Field must be a string'), v.transform(Number), v.minValue(1, 'Must be >= 1')),
-    '10'
-  ),
+export const PaginationQuery = object({
+  offset: optional(pipe(string(), transform(Number), minValue(0)), '0'),
+  limit: optional(pipe(string(), transform(Number), minValue(1)), '10'),
 });
 
-export const IdParam = v.object({
-  id: v.pipe(v.string('Field must be a string'), v.transform(Number)),
+export const IdParam = object({
+  id: pipe(string(), transform(Number)),
 });
+
+export const userNameValidation = pipe(string(), minLength(config.validation.MIN_USERNAME_LEN));
+export const fullNameValidation = pipe(string(), minLength(config.validation.MIN_FULLNAME_LEN));
+export const passwordValidation = pipe(string(), minLength(config.validation.MIN_PASSWORD_LEN));
+export const pcbNameValidation = pipe(
+  string(),
+  minLength(config.validation.MIN_PCB_NAME_LEN),
+  maxLength(255)
+);
+export const dateValidation = pipe(
+  string(),
+  transform((input: string) => new Date(input)),
+  date()
+);

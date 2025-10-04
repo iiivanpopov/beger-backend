@@ -1,7 +1,7 @@
-import * as v from 'valibot';
+import { parse } from 'valibot';
 import { EnvSchema } from './env.schema';
 
-const env = v.parse(EnvSchema, process.env);
+const env = parse(EnvSchema, process.env);
 
 export const config = {
   nodeEnv: env.NODE_ENV,

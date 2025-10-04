@@ -78,13 +78,4 @@ export const baseDocs = {
       },
     },
   },
-  paths: {
-    '/health': {
-      get: {
-        summary: 'Health check',
-        tags: ['System'],
-        responses: { '200': { description: 'OK' } },
-      },
-    },
-  },
 } as const;

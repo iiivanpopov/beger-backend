@@ -24,12 +24,7 @@ export const setup = async () => {
   app.use(cors());
   app.use(logger());
 
-  app.get('/health', (c) =>
-    c.json({
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-    })
-  );
+  app.get('/health', (c) => c.json('ok'));
 
   app.route('/api', router);
 
@@ -41,7 +36,7 @@ export const setup = async () => {
       cert: Bun.file(path.resolve(baseUrl, './certs/cert.pem')),
     },
     fetch: app.fetch,
-    development: config.isProduction,
+    development: config.isDevelopment,
   });
 
   log.info(`Listening ${server.url}`);

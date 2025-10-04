@@ -1,30 +1,13 @@
-import * as v from 'valibot';
+import type { InferOutput } from 'valibot';
+import { maxLength, minLength, nullable, object, optional, pipe, string } from 'valibot';
 import { config } from '@/config';
+import { dateValidation, pcbNameValidation } from '@/utils';
 
-export const CreateRepairBody = v.object({
-  pcbName: v.pipe(
-    v.string('Field must be a string'),
-    v.minLength(
-      config.validation.MIN_PCB_NAME_LEN,
-      `Minimal pcbName length: ${config.validation.MIN_PCB_NAME_LEN}`
-    ),
-    v.maxLength(255, 'Max pcbName length: 255')
-  ),
-  defect: v.pipe(
-    v.string('Field must be a string'),
-    v.minLength(
-      config.validation.MIN_DEFECT_LEN,
-      `Minimal defect length: ${config.validation.MIN_DEFECT_LEN}`
-    )
-  ),
-  note: v.optional(
-    v.nullable(v.pipe(v.string('Field must be a string'), v.maxLength(255, 'Max note length: 255')))
-  ),
-  date: v.pipe(
-    v.string('Field must be a string'),
-    v.transform((input: string) => new Date(input)),
-    v.date('Field must be a valid date')
-  ),
+export const CreateRepairBody = object({
+  pcbName: pcbNameValidation,
+  defect: pipe(string(), minLength(config.validation.MIN_DEFECT_LEN)),
+  note: optional(nullable(pipe(string(), maxLength(255)))),
+  date: dateValidation,
 });
 
-export type CreateRepairData = v.InferOutput<typeof CreateRepairBody>;
+export type CreateRepairData = InferOutput<typeof CreateRepairBody>;

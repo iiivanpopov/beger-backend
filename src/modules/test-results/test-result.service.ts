@@ -33,7 +33,7 @@ export const createTestResult = async (
     .values({
       userId,
       pcbName: payload.pcbName,
-      passedFirstTry: payload.failed,
+      passedFirstTry: payload.passedFirstTry,
       failed: payload.failed,
       total: payload.total,
       date: payload.date,

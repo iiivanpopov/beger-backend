@@ -1,17 +1,12 @@
-import * as v from 'valibot';
+import { minValue, number, object, optional, picklist, pipe, string, transform } from 'valibot';
 
-export const EnvSchema = v.object({
-  NODE_ENV: v.optional(v.picklist(['development', 'production', 'test'] as const), 'development'),
-  PORT: v.pipe(
-    v.string('PORT must be a string'),
-    v.transform(Number),
-    v.number('PORT must be a number'),
-    v.minValue(1, 'PORT must be >= 1')
-  ),
-  DATABASE_URL: v.string('DATABASE_URL is required'),
-  JWT_ACCESS_SECRET: v.string('JWT_ACCESS_SECRET is required'),
-  JWT_REFRESH_SECRET: v.string('JWT_REFRESH_SECRET is required'),
-  SHEET_URL: v.string('SHEET_URL is required'),
-  MEMCACHED_URL: v.string('MEMCACHED_URL is required'),
-  ADMIN_PASSWORD: v.string('ADMIN_PASSWORD is required'),
+export const EnvSchema = object({
+  NODE_ENV: optional(picklist(['development', 'production']), 'development'),
+  PORT: pipe(string(), transform(Number), number(), minValue(1)),
+  DATABASE_URL: string(),
+  JWT_ACCESS_SECRET: string(),
+  JWT_REFRESH_SECRET: string(),
+  SHEET_URL: string(),
+  MEMCACHED_URL: string(),
+  ADMIN_PASSWORD: string(),
 });

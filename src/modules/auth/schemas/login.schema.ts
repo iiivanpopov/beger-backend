@@ -1,21 +1,10 @@
-import * as v from 'valibot';
-import { config } from '@/config';
+import type { InferOutput } from 'valibot';
+import { object } from 'valibot';
+import { passwordValidation, userNameValidation } from '@/utils';
 
-export const LoginBody = v.object({
-  userName: v.pipe(
-    v.string('Field must be a string'),
-    v.minLength(
-      config.validation.MIN_USERNAME_LEN,
-      `Minimal userName length: ${config.validation.MIN_USERNAME_LEN}`
-    )
-  ),
-  password: v.pipe(
-    v.string('Field must be a string'),
-    v.minLength(
-      config.validation.MIN_PASSWORD_LEN,
-      `Minimal password length: ${config.validation.MIN_PASSWORD_LEN}`
-    )
-  ),
+export const LoginBody = object({
+  userName: userNameValidation,
+  password: passwordValidation,
 });
 
-export type LoginData = v.InferOutput<typeof LoginBody>;
+export type LoginData = InferOutput<typeof LoginBody>;
