@@ -41,7 +41,7 @@ export const createRepair = async (
       date: payload.date,
     })
     .returning();
-  if (!repair) throw new ApiError.InternalServerError();
+  if (!repair) throw ApiError.InternalServerError();
 
   return repair;
 };

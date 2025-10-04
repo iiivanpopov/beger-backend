@@ -31,7 +31,7 @@ export const updateUser = async (userId: number, payload: Partial<InsertUser>) =
     .set(payload)
     .where(eq(usersTable.id, userId))
     .returning();
-  if (!user) throw new ApiError.InternalServerError();
+  if (!user) throw ApiError.InternalServerError();
 
   return toUserDTO(user);
 };

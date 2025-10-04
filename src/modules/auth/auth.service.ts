@@ -21,7 +21,7 @@ export const register = async (userPayload: RegisterData) => {
       role: 'user',
     })
     .returning();
-  if (!user) throw new ApiError.InternalServerError();
+  if (!user) throw ApiError.InternalServerError();
 
   const signedTokens = await signJWTs({
     sub: String(user.id),

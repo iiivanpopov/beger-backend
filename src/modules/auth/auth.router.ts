@@ -1,8 +1,7 @@
 import { vValidator } from '@hono/valibot-validator';
 import { deleteCookie, getCookie } from 'hono/cookie';
 import { config } from '@/config';
-import { roleMiddleware } from '@/middleware';
-import { accessJwtMiddleware, refreshJwtMiddleware } from '@/middleware/jwt.middleware';
+import { accessJwtMiddleware, refreshJwtMiddleware, roleMiddleware } from '@/middleware';
 import { getUserId } from '@/utils';
 import { setCookieTokens } from '@/utils/cookie';
 import { createRouter } from '@/utils/hono';
