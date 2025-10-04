@@ -40,11 +40,7 @@
     "promise/no-return-wrap": "error",
     "no-unassigned-import": "off"
   },
-  "ignorePatterns": [
-    "dist/",
-    "build/",
-    "node_modules/"
-  ],
+  "ignorePatterns": ["dist/", "build/", "node_modules/"],
   "overrides": [
     {
       "files": ["rolldown.config.ts"],

@@ -17,8 +17,8 @@ export const setup = async () => {
       import('@hono/swagger-ui')
     ])
 
-    app.get('/doc', c => c.json(openApiDocs))
-    app.get('/ui', swaggerUI({ url: '/doc' }))
+    app.get('/docs', c => c.json(openApiDocs))
+    app.get('/swagger', swaggerUI({ url: '/docs' }))
   }
 
   app.use(cors())
@@ -33,8 +33,7 @@ export const setup = async () => {
 
   app.route('/api', router)
 
-  const baseUrl =
-    config.isDevelopment ? '/' : import.meta.dirname
+  const baseUrl = config.isDevelopment ? '/' : import.meta.dirname
   const server = Bun.serve({
     port: config.server.port,
     tls: {

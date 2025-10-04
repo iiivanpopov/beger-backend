@@ -6,6 +6,7 @@ const env = v.parse(EnvSchema, process.env)
 export const config = {
   isProduction: env.NODE_ENV === 'production',
   isDevelopment: env.NODE_ENV !== 'production',
+
   server: {
     port: env.PORT
   },

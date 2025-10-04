@@ -22,7 +22,11 @@ export const signJWT = async (
   )
 
 export const signJWTs = async (payload: UserJwtPayload) => ({
-  accessToken: await signJWT(payload, config.jwt.accessExpiresIn, config.jwt.accessSecret),
+  accessToken: await signJWT(
+    payload,
+    config.jwt.accessExpiresIn,
+    config.jwt.accessSecret
+  ),
   refreshToken: await signJWT(
     payload,
     config.jwt.refreshExpiresIn,
