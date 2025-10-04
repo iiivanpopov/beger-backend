@@ -1,21 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "eslint",
-    "typescript",
-    "unicorn",
-    "oxc",
-    "import",
-    "jsx-a11y",
-    "node",
-    "promise",
-    "react-perf",
-    "nextjs",
-    "react",
-    "vitest"
-  ],
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "node", "promise"],
   "env": {
-    "browser": true,
     "node": true,
     "es2024": true
   },
@@ -604,5 +590,13 @@
     "no-return-in-finally": "off",
     "require-render-return": "off"
   },
-  "ignorePatterns": ["**/node_modules"]
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/dist",
+    "**/build",
+    "**/generated",
+    "**/coverage",
+    "**/.next",
+    "**/.nuxt"
+  ]
 }
