@@ -10,7 +10,10 @@ export async function setup() {
 
   app.onError(errorMiddleware)
 
-  app.use(cors())
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  }))
   app.use(logger())
 
   app.get('/health', c => c.json('ok'))

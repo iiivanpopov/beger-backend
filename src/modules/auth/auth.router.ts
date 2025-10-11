@@ -1,8 +1,6 @@
 import { vValidator } from '@hono/valibot-validator'
-import { deleteCookie, getCookie } from 'hono/cookie'
-import { config } from '@/config'
 import { accessJwtMiddleware, refreshJwtMiddleware, roleMiddleware } from '@/middleware'
-import { createRouter, getUserId, setCookieTokens } from '@/utils'
+import { createRouter, getRefreshToken, getUserId } from '@/utils'
 import { login, logout, refresh, register } from './auth.service'
 import { LoginBody } from './schemas/login.schema'
 import { RegisterBody } from './schemas/register.schema'
@@ -14,7 +12,7 @@ authRouter.post('/login', vValidator('json', LoginBody), async (c) => {
 
   const tokens = await login(body)
 
-  setCookieTokens(c, tokens)
+  // setCookieTokens(c, tokens)
 
   return c.json({ data: tokens, success: true }, 200)
 })
@@ -38,19 +36,20 @@ authRouter.post('/logout', refreshJwtMiddleware, async (c) => {
 
   await logout(userId)
 
-  deleteCookie(c, config.cookies.accessTokenName)
-  deleteCookie(c, config.cookies.refreshTokenName)
+  // deleteCookie(c, config.cookies.accessTokenName)
+  // deleteCookie(c, config.cookies.refreshTokenName)
 
   return c.json({ success: true }, 200)
 })
 
 authRouter.post('/refresh', refreshJwtMiddleware, async (c) => {
-  const refreshToken = getCookie(c, config.cookies.refreshTokenName)!
+  // const refreshToken = getCookie(c, config.cookies.refreshTokenName)!
+  const refreshToken = getRefreshToken(c)!
   const userId = getUserId(c)
 
   const tokens = await refresh(userId, refreshToken)
 
-  setCookieTokens(c, tokens)
+  // setCookieTokens(c, tokens)
 
   return c.json({ data: tokens, success: true }, 200)
 })

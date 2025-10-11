@@ -28,6 +28,11 @@ export const config = {
     refreshTokenName: 'refreshToken',
   },
 
+  headers: {
+    accessToken: 'Authorization',
+    refreshToken: 'X-Refresh-Token',
+  },
+
   options: {
     sheetUrl: env.SHEET_URL,
   },
