@@ -1,5 +1,5 @@
-export { authRouter } from './auth/auth.router';
-export { optionsRouter } from './options/options.router';
-export { repairsRouter } from './repairs/repair.router';
-export { testResultsRouter } from './test-results/test-result.router';
-export { usersRouter } from './users/users.router';
+export * from './auth/auth.router'
+export * from './options/options.router'
+export * from './repairs/repair.router'
+export * from './test-results/test-result.router'
+export * from './users/users.router'

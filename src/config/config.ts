@@ -1,7 +1,7 @@
-import { parse } from 'valibot';
-import { EnvSchema } from './env.schema';
+import { parse } from 'valibot'
+import { EnvSchema } from './env.schema'
 
-const env = parse(EnvSchema, process.env);
+const env = parse(EnvSchema, import.meta.env)
 
 export const config = {
   nodeEnv: env.NODE_ENV,
@@ -33,12 +33,9 @@ export const config = {
   },
 
   cache: {
-    url: env.MEMCACHED_URL,
-    fields: {
-      options: {
-        key: 'options',
-        ttl: 60 * 5,
-      },
+    options: {
+      key: 'options',
+      ttl: 60 * 5,
     },
   },
 
@@ -49,4 +46,4 @@ export const config = {
     MIN_PCB_NAME_LEN: 1,
     MIN_DEFECT_LEN: 1,
   },
-};
+}

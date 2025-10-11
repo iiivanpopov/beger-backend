@@ -1,5 +1,5 @@
-import { integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { usersTable } from './users.sql';
+import { integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { usersTable } from './users.sql'
 
 export const repairsTable = pgTable('repairs', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -13,7 +13,7 @@ export const repairsTable = pgTable('repairs', {
   note: text(),
   date: timestamp({ withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
+})
 
-export type Repair = typeof repairsTable.$inferSelect;
-export type InsertRepair = typeof repairsTable.$inferInsert;
+export type Repair = typeof repairsTable.$inferSelect
+export type InsertRepair = typeof repairsTable.$inferInsert

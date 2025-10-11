@@ -4,13 +4,13 @@ import {
   repairsRouter,
   testResultsRouter,
   usersRouter,
-} from '@/modules';
-import { createRouter } from '@/utils';
+} from '@/modules'
+import { createRouter } from '@/utils'
 
-export const router = createRouter();
+export const router = createRouter()
 
-router.route('/auth', authRouter);
-router.route('/users', usersRouter);
-router.route('/records/repairs', repairsRouter);
-router.route('/records/test-results', testResultsRouter);
-router.route('/options', optionsRouter);
+router.route('/auth', authRouter)
+router.route('/users', usersRouter)
+router.route('/repairs', repairsRouter)
+router.route('/test-results', testResultsRouter)
+router.route('/options', optionsRouter)

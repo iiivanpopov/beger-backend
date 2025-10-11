@@ -1,17 +1,14 @@
-import { db, usersTable } from '@/database';
-import { log } from '@/utils';
+import { db, usersTable } from '@/database'
+import { log } from '@/utils'
 
-try {
-  await db
-    .insert(usersTable)
-    .values({
-      fullName: 'Admin',
-      userName: 'admin',
-      passwordHash: await Bun.password.hash(process.env.ADMIN_PASSWORD!),
-      role: 'admin',
-    })
-    .onConflictDoNothing();
-  log.info('Admin seeded successfully.');
-} catch (error) {
-  log.error(error);
-}
+db
+  .insert(usersTable)
+  .values({
+    fullName: 'Admin',
+    userName: 'admin',
+    passwordHash: await Bun.password.hash(import.meta.env.ADMIN_PASSWORD!),
+    role: 'admin',
+  })
+  .onConflictDoNothing()
+  .then(() => log.info('Admin seeded successfully.'))
+  .catch(error => log.error(error))

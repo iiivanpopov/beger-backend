@@ -1,23 +1,23 @@
-import { vValidator } from '@hono/valibot-validator';
-import { deleteCookie, getCookie } from 'hono/cookie';
-import { config } from '@/config';
-import { accessJwtMiddleware, refreshJwtMiddleware, roleMiddleware } from '@/middleware';
-import { createRouter, getUserId, setCookieTokens } from '@/utils';
-import { login, logout, refresh, register } from './auth.service';
-import { LoginBody } from './schemas/login.schema';
-import { RegisterBody } from './schemas/register.schema';
+import { vValidator } from '@hono/valibot-validator'
+import { deleteCookie, getCookie } from 'hono/cookie'
+import { config } from '@/config'
+import { accessJwtMiddleware, refreshJwtMiddleware, roleMiddleware } from '@/middleware'
+import { createRouter, getUserId, setCookieTokens } from '@/utils'
+import { login, logout, refresh, register } from './auth.service'
+import { LoginBody } from './schemas/login.schema'
+import { RegisterBody } from './schemas/register.schema'
 
-export const authRouter = createRouter();
+export const authRouter = createRouter()
 
 authRouter.post('/login', vValidator('json', LoginBody), async (c) => {
-  const body = c.req.valid('json');
+  const body = c.req.valid('json')
 
-  const tokens = await login(body);
+  const tokens = await login(body)
 
-  setCookieTokens(c, tokens);
+  setCookieTokens(c, tokens)
 
-  return c.json({ data: tokens, success: true }, 200);
-});
+  return c.json({ data: tokens, success: true }, 200)
+})
 
 authRouter.post(
   '/register',
@@ -25,32 +25,32 @@ authRouter.post(
   accessJwtMiddleware,
   roleMiddleware('admin'),
   async (c) => {
-    const body = c.req.valid('json');
+    const body = c.req.valid('json')
 
-    const user = await register(body);
+    const user = await register(body)
 
-    return c.json({ data: user, success: true }, 201);
-  }
-);
+    return c.json({ data: user, success: true }, 201)
+  },
+)
 
 authRouter.post('/logout', refreshJwtMiddleware, async (c) => {
-  const userId = getUserId(c);
+  const userId = getUserId(c)
 
-  await logout(userId);
+  await logout(userId)
 
-  deleteCookie(c, config.cookies.accessTokenName);
-  deleteCookie(c, config.cookies.refreshTokenName);
+  deleteCookie(c, config.cookies.accessTokenName)
+  deleteCookie(c, config.cookies.refreshTokenName)
 
-  return c.json({ success: true }, 200);
-});
+  return c.json({ success: true }, 200)
+})
 
 authRouter.post('/refresh', refreshJwtMiddleware, async (c) => {
-  const refreshToken = getCookie(c, config.cookies.refreshTokenName)!;
-  const userId = getUserId(c);
+  const refreshToken = getCookie(c, config.cookies.refreshTokenName)!
+  const userId = getUserId(c)
 
-  const tokens = await refresh(userId, refreshToken);
+  const tokens = await refresh(userId, refreshToken)
 
-  setCookieTokens(c, tokens);
+  setCookieTokens(c, tokens)
 
-  return c.json({ data: tokens, success: true }, 200);
-});
+  return c.json({ data: tokens, success: true }, 200)
+})

@@ -1,10 +1,10 @@
-import pino from 'pino';
+import pino from 'pino'
+import { config } from '@/config'
 
 export const log = pino({
   level: 'info',
-  ...(process.env.NODE_ENV === 'production'
-    ? {}
-    : {
+  ...(config.isDevelopment
+    ? {
         transport: {
           target: 'pino-pretty',
           options: {
@@ -13,5 +13,6 @@ export const log = pino({
             ignore: 'pid,hostname',
           },
         },
-      }),
-});
+      }
+    : {}),
+})

@@ -1,5 +1,5 @@
-import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { usersTable } from './users.sql';
+import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { usersTable } from './users.sql'
 
 export const testResultsTable = pgTable('test_result', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -14,7 +14,7 @@ export const testResultsTable = pgTable('test_result', {
   total: integer().notNull(),
   date: timestamp({ withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
+})
 
-export type TestResult = typeof testResultsTable.$inferSelect;
-export type InsertTestResult = typeof testResultsTable.$inferInsert;
+export type TestResult = typeof testResultsTable.$inferSelect
+export type InsertTestResult = typeof testResultsTable.$inferInsert

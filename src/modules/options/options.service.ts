@@ -1,24 +1,23 @@
-import { config } from '@/config';
-import { parseCsvRows, withCache } from '@/utils';
+import { config } from '@/config'
+import { parseCsvRows, withCache } from '@/utils'
 
-const { fields } = config.cache;
-
-export const fetchOptions = () =>
-  withCache(
-    fields.options.key,
+export function fetchOptions() {
+  return withCache(
+    config.cache.options.key,
     async () => {
-      const response = await fetch(config.options.sheetUrl);
-      const text = await response.text();
+      const response = await fetch(config.options.sheetUrl)
+      const text = await response.text()
 
-      const parsed = parseCsvRows(text);
+      const parsed = parseCsvRows(text)
 
       const options = parsed.reduce<Record<string, unknown[]>>((acc, row) => {
-        for (const [key, value] of Object.entries(row)) (acc[key] ??= []).push(value);
+        for (const [key, value] of Object.entries(row))
+          (acc[key] ??= []).push(value)
+        return acc
+      }, {})
 
-        return acc;
-      }, {});
-
-      return options;
+      return options
     },
-    fields.options.ttl
-  );
+    config.cache.options.ttl,
+  )
+}

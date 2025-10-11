@@ -1,4 +1,4 @@
-export { type Database, db } from './instance';
+export { type Database, db } from './instance'
 export {
   repairsTable,
   rolesEnum,
@@ -6,4 +6,4 @@ export {
   tokensTable,
   toUserDTO,
   usersTable,
-} from './tables';
+} from './tables'

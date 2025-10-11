@@ -8,7 +8,7 @@ run_migrations() {
 
 seed_database() {
   echo "[INFO] Seeding database..."
-  bun db:seed:prod
+  bun seed:prod
 }
 
 start_app() {

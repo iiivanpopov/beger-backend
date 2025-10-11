@@ -1,1 +1,1 @@
-export { setup } from './main';
+export * from './main'

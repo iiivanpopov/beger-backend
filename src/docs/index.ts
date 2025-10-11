@@ -1,1 +1,0 @@
-export { openApiDocs } from './docs';
