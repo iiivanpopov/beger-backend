@@ -65,7 +65,7 @@ export async function login(userPayload: LoginData) {
       target: tokensTable.userId,
     })
 
-  return signedTokens
+  return { tokens: signedTokens, user: toUserDTO(user) }
 }
 
 export async function logout(userId: number) {

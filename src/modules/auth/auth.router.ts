@@ -10,11 +10,11 @@ export const authRouter = createRouter()
 authRouter.post('/login', vValidator('json', LoginBody), async (c) => {
   const body = c.req.valid('json')
 
-  const tokens = await login(body)
+  const data = await login(body)
 
   // setCookieTokens(c, tokens)
 
-  return c.json({ data: tokens, success: true }, 200)
+  return c.json({ data, success: true }, 200)
 })
 
 authRouter.post(
