@@ -11,9 +11,9 @@
     "build": "bun ./scripts/build.script.ts",
     "build:dev": "cross-env NODE_ENV=development bun run build",
     "build:prod": "cross-env NODE_ENV=production bun run build",
-    "start:dev": "cross-env NODE_ENV=development bun --watch ./src/index.ts",
-    "start:dist:dev": "cross-env NODE_ENV=development bun ./dist/index.js",
-    "start:dist:prod": "cross-env NODE_ENV=production bun ./dist/index.js",
+    "dev": "cross-env NODE_ENV=development bun --watch ./src/index.ts",
+    "dist:dev": "cross-env NODE_ENV=development bun ./dist/index.js",
+    "dist:prod": "cross-env NODE_ENV=production bun ./dist/index.js",
     "seed:dev": "cross-env NODE_ENV=development bun ./scripts/seed.script.ts",
     "seed:prod": "cross-env NODE_ENV=production bun ./dist/seed.script.js",
     "prepare": "husky"
