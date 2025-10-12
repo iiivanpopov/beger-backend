@@ -49,4 +49,4 @@ export const getUserId = (c: AppContext) => Number(c.get('jwtPayload').sub)
 export const getUserRole = (c: AppContext) => c.get('jwtPayload').role
 
 export const getAccessToken = (c: AppContext) => c.req.header(config.headers.accessToken)?.split(' ')[1]
-export const getRefreshToken = (c: AppContext) => c.req.header(config.headers.accessToken)?.split(' ')[1]
+export const getRefreshToken = (c: AppContext) => c.req.header(config.headers.refreshToken)?.split(' ')[1]
