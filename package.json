@@ -7,7 +7,7 @@
   "license": "MIT",
   "module": "src/index.ts",
   "scripts": {
-    "prebuild": "rimraf dist && cpy creds dist",
+    "prebuild": "rimraf dist",
     "build": "bun ./scripts/build.script.ts",
     "build:dev": "cross-env NODE_ENV=development bun run build",
     "build:prod": "cross-env NODE_ENV=production bun run build",

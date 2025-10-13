@@ -10,10 +10,7 @@ export async function setup() {
 
   app.onError(errorMiddleware)
 
-  app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-  }))
+  app.use(cors())
   app.use(logger())
 
   app.get('/health', c => c.json('ok'))
@@ -22,10 +19,10 @@ export async function setup() {
 
   const server = Bun.serve({
     port: config.server.port,
-    tls: {
-      key: Bun.file('./creds/key.pem'),
-      cert: Bun.file('./creds/cert.pem'),
-    },
+    // tls: {
+    //   key: Bun.file('./creds/key.pem'),
+    //   cert: Bun.file('./creds/cert.pem'),
+    // },
     fetch: app.fetch,
   })
 
