@@ -1,6 +1,7 @@
 export * from './cache'
 export * from './cookie'
 export * from './csv'
+export * from './error'
 export * from './hono'
 export * from './jwt'
 export * from './logger'

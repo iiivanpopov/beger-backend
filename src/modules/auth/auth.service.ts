@@ -44,11 +44,11 @@ export async function login(userPayload: LoginData) {
     .from(usersTable)
     .where(eq(usersTable.userName, userPayload.userName))
   if (!user)
-    throw ApiError.NotFound()
+    throw ApiError.Unauthorized('Invalid email or password')
 
   const isVerified = await Bun.password.verify(userPayload.password, user.passwordHash)
   if (!isVerified)
-    throw ApiError.Unauthorized()
+    throw ApiError.Unauthorized('Invalid email or password')
 
   const signedTokens = await signJWTs({
     sub: String(user.id),

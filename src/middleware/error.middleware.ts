@@ -1,10 +1,11 @@
 import type { Context } from 'hono'
 import { ApiError } from '@/exceptions'
-import { log } from '@/utils'
+import { isUnauthorizedError, log } from '@/utils'
 
 export function errorMiddleware(error: unknown, c: Context) {
-  if (error && typeof error === 'object' && 'status' in error && error.status === 401)
-    return c.json(ApiError.Unauthorized().toJSON(), 401)
+  if (isUnauthorizedError(error)) {
+    return c.json(ApiError.Unauthorized(error.message).toJSON(), 401)
+  }
   if (error instanceof ApiError)
     return c.json(error.toJSON(), error.status)
 
