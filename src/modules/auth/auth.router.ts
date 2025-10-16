@@ -12,8 +12,6 @@ authRouter.post('/login', vValidator('json', LoginBody), async (c) => {
 
   const data = await login(body)
 
-  // setCookieTokens(c, tokens)
-
   return c.json({ data, success: true }, 200)
 })
 
@@ -36,20 +34,14 @@ authRouter.post('/logout', refreshJwtMiddleware, async (c) => {
 
   await logout(userId)
 
-  // deleteCookie(c, config.cookies.accessTokenName)
-  // deleteCookie(c, config.cookies.refreshTokenName)
-
   return c.json({ success: true }, 200)
 })
 
 authRouter.post('/refresh', refreshJwtMiddleware, async (c) => {
-  // const refreshToken = getCookie(c, config.cookies.refreshTokenName)!
   const refreshToken = getRefreshToken(c)!
   const userId = getUserId(c)
 
   const tokens = await refresh(userId, refreshToken)
-
-  // setCookieTokens(c, tokens)
 
   return c.json({ data: tokens, success: true }, 200)
 })

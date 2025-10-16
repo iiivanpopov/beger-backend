@@ -1,5 +1,5 @@
 import { config } from '@/config'
-import { parseCsvRows, withCache } from '@/utils'
+import { parseCsvRows as csvToRows, groupBy as groupRows, withCache } from '@/utils'
 
 export function fetchOptions() {
   return withCache(
@@ -8,15 +8,9 @@ export function fetchOptions() {
       const response = await fetch(config.options.sheetUrl)
       const text = await response.text()
 
-      const parsed = parseCsvRows(text)
+      const rows = csvToRows(text)
 
-      const options = parsed.reduce<Record<string, unknown[]>>((acc, row) => {
-        for (const [key, value] of Object.entries(row))
-          (acc[key] ??= []).push(value)
-        return acc
-      }, {})
-
-      return options
+      return groupRows(rows)
     },
     config.cache.options.ttl,
   )

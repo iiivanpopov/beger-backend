@@ -19,10 +19,6 @@ export async function setup() {
 
   const server = Bun.serve({
     port: config.server.port,
-    // tls: {
-    //   key: Bun.file('./creds/key.pem'),
-    //   cert: Bun.file('./creds/cert.pem'),
-    // },
     fetch: app.fetch,
   })
 
