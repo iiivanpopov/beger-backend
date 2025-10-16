@@ -4,7 +4,6 @@ import type { UserRole } from '@/database/tables'
 import { sign, verify } from 'hono/jwt'
 import { config } from '@/config'
 import { ApiError } from '@/exceptions/api-error'
-import { log } from './logger'
 
 export interface UserJwtPayload {
   sub: string
@@ -22,7 +21,7 @@ export async function signJWT({ sub, role }: UserJwtPayload, expiresIn: number, 
     return token
   }
   catch (error) {
-    log.error(error)
+    console.error(error)
     throw ApiError.Unauthorized()
   }
 }
@@ -40,7 +39,7 @@ export async function verifyJWT(token: string, secret: string): Promise<JWTPaylo
     return payload as JWTPayload & UserJwtPayload
   }
   catch (error) {
-    log.error(error)
+    console.error(error)
     throw ApiError.Unauthorized()
   }
 }

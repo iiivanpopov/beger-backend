@@ -7,4 +7,6 @@ export default antfu({
 }).overrideRules({
   'node/prefer-global/process': 'off',
   'unicorn/throw-new-error': 'off',
+  'antfu/no-top-level-await': 'off',
+  'no-console': 'off',
 })

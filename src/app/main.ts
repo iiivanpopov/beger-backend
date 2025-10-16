@@ -2,7 +2,7 @@ import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { config } from '@/config'
 import { errorMiddleware } from '@/middleware'
-import { createRouter, log } from '@/utils'
+import { createRouter } from '@/utils'
 import { router } from './router'
 
 export async function setup() {
@@ -22,5 +22,5 @@ export async function setup() {
     fetch: app.fetch,
   })
 
-  log.info(`Listening ${server.url}`)
+  console.log(`Listening ${server.url}`)
 }
