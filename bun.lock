@@ -4,22 +4,22 @@
     "": {
       "name": "beger-backend",
       "dependencies": {
-        "@hono/valibot-validator": "^0.5.3",
-        "drizzle-orm": "^0.44.6",
-        "hono": "^4.9.12",
-        "valibot": "^1.1.0",
+        "@hono/valibot-validator": "latest",
+        "drizzle-orm": "latest",
+        "hono": "latest",
+        "valibot": "latest",
       },
       "devDependencies": {
-        "@antfu/eslint-config": "^6.0.0",
-        "@types/bun": "^1.3.0",
-        "cpy-cli": "^6.0.0",
-        "cross-env": "^10.1.0",
-        "drizzle-kit": "^0.31.5",
-        "eslint": "^9.37.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^16.2.4",
-        "rimraf": "^6.0.1",
-        "typescript": "^5.9.3",
+        "@antfu/eslint-config": "latest",
+        "@types/bun": "latest",
+        "cpy-cli": "latest",
+        "cross-env": "latest",
+        "drizzle-kit": "latest",
+        "eslint": "latest",
+        "husky": "latest",
+        "lint-staged": "latest",
+        "rimraf": "latest",
+        "typescript": "latest",
       },
     },
   },
@@ -450,7 +450,7 @@
 
     "has-flag": ["has-flag@4.0.0", "", {}, "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="],
 
-    "hono": ["hono@4.9.12", "", {}, "sha512-SrTC0YxqPwnN7yKa8gg/giLyQ2pILCKoideIHbYbFQlWZjYt68D2A4Ae1hehO/aDQ6RmTcpqOV/O2yBtMzx/VQ=="],
+    "hono": ["hono@4.10.0", "", {}, "sha512-V/S2IyKL6fk5+bEjiQzg74r5BglqAwU20IX3WjdTUFgvmtSqAZjSxN/Zb5lr6/JXVmH0aqkqOq++3UgzOi9+4Q=="],
 
     "husky": ["husky@9.1.7", "", { "bin": { "husky": "bin.js" } }, "sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA=="],
 
