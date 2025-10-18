@@ -12,7 +12,7 @@ import {
 import { config } from '@/config'
 
 export const PaginationQuery = object({
-  offset: optional(pipe(string(), transform(Number), minValue(0)), '0'),
+  page: optional(pipe(string(), transform(Number), minValue(1)), '0'),
   limit: optional(pipe(string(), transform(Number), minValue(1)), '10'),
 })
 

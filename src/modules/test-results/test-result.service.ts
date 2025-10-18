@@ -2,6 +2,7 @@ import type { InsertTestResult } from '@/database/tables'
 import { and, desc, eq, gte, sql } from 'drizzle-orm'
 import { db, testResultsTable } from '@/database'
 import { ApiError } from '@/exceptions'
+import { buildMeta, pageToOffset } from '@/utils'
 
 export async function getUserTestResults(userId: number) {
   return await db
@@ -17,16 +18,28 @@ export async function getUserTestResults(userId: number) {
     .orderBy(desc(testResultsTable.createdAt))
 }
 
-export async function getTestResults({ offset = 0, limit = 10 }) {
-  return await db
+export async function getTestResults({ page = 1, limit = 10 }) {
+  const testResults = await db
     .select()
     .from(testResultsTable)
     .limit(limit)
-    .offset(offset)
+    .offset(pageToOffset({ page, limit }))
     .orderBy(desc(testResultsTable.createdAt))
+
+  const count = await db.$count(testResultsTable)
+
+  const meta = buildMeta(count, page, limit)
+
+  return {
+    testResults,
+    meta,
+  }
 }
 
-export async function createTestResult(userId: number, payload: Omit<InsertTestResult, 'createdAt' | 'userId'>) {
+export async function createTestResult(
+  userId: number,
+  payload: Omit<InsertTestResult, 'createdAt' | 'userId'>,
+) {
   const [testResult] = await db
     .insert(testResultsTable)
     .values({

@@ -2,6 +2,7 @@ import type { InsertRepair } from '@/database/tables'
 import { and, desc, eq, gte, sql } from 'drizzle-orm'
 import { db, repairsTable } from '@/database'
 import { ApiError } from '@/exceptions'
+import { buildMeta, pageToOffset } from '@/utils'
 
 export async function getUserRepairs(userId: number) {
   const repairs = await db
@@ -19,13 +20,22 @@ export async function getUserRepairs(userId: number) {
   return repairs
 }
 
-export async function getRepairs({ offset = 0, limit = 10 }) {
-  return await db
+export async function getRepairs({ page = 1, limit = 10 }) {
+  const testResults = await db
     .select()
     .from(repairsTable)
     .limit(limit)
-    .offset(offset)
+    .offset(pageToOffset({ page, limit }))
     .orderBy(desc(repairsTable.createdAt))
+
+  const count = await db.$count(repairsTable)
+
+  const meta = buildMeta(count, page, limit)
+
+  return {
+    testResults,
+    meta,
+  }
 }
 
 export async function createRepair(userId: number, payload: Omit<InsertRepair, 'createdAt' | 'userId'>) {

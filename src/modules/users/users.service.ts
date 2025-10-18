@@ -1,7 +1,8 @@
 import type { InsertUser } from '@/database/tables'
-import { and, desc, eq, not } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 import { db, toUserDTO, usersTable } from '@/database'
 import { ApiError } from '@/exceptions'
+import { buildMeta, pageToOffset } from '@/utils'
 
 export async function getUser(userId: number) {
   const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId))
@@ -11,16 +12,23 @@ export async function getUser(userId: number) {
   return toUserDTO(user)
 }
 
-export async function getAllUsers({ offset = 0, limit = 10 }) {
+export async function getUsers({ page = 1, limit = 10 }) {
   const users = await db
     .select()
     .from(usersTable)
     .where(eq(usersTable.role, 'user'))
     .limit(limit)
-    .offset(offset)
+    .offset(pageToOffset({ page, limit }))
     .orderBy(desc(usersTable.createdAt))
 
-  return users.map(user => toUserDTO(user))
+  const count = await db.$count(usersTable, eq(usersTable.role, 'user'))
+
+  const meta = buildMeta(count, page, limit)
+
+  return {
+    users: users.map(toUserDTO),
+    meta,
+  }
 }
 
 export async function updateUser(userId: number, payload: Partial<InsertUser>) {
@@ -46,5 +54,5 @@ export async function deleteUser(userId: number) {
 
   await db
     .delete(usersTable)
-    .where(and(eq(usersTable.id, userId), not(eq(usersTable.role, 'admin'))))
+    .where(and(eq(usersTable.id, userId), eq(usersTable.role, 'user')))
 }

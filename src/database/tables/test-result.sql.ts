@@ -5,9 +5,7 @@ export const testResultsTable = pgTable('test_result', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   userId: integer('user_id')
     .notNull()
-    .references(() => usersTable.id, {
-      onDelete: 'set null',
-    }),
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
   pcbName: varchar('pcb_name', { length: 255 }).notNull(),
   passedFirstTry: integer('passed_first_try').notNull(),
   failed: integer().notNull(),

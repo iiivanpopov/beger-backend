@@ -25,9 +25,9 @@ repairsRouter.get('/me', async (c) => {
 repairsRouter.get('/', vValidator('query', PaginationQuery), roleMiddleware('admin'), async (c) => {
   const queryParams = c.req.valid('query')
 
-  const testResults = await getRepairs(queryParams)
+  const repairs = await getRepairs(queryParams)
 
-  return c.json({ data: testResults, success: true }, 200)
+  return c.json({ data: repairs, success: true }, 200)
 })
 
 repairsRouter.post('/', vValidator('json', CreateRepairBody), async (c) => {

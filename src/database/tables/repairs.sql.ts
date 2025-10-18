@@ -5,9 +5,7 @@ export const repairsTable = pgTable('repairs', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   userId: integer('user_id')
     .notNull()
-    .references(() => usersTable.id, {
-      onDelete: 'set null',
-    }),
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
   pcbName: varchar('pcb_name', { length: 255 }).notNull(),
   defect: varchar({ length: 255 }).notNull(),
   note: text(),
